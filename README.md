@@ -2,6 +2,20 @@
 
 ---
 
+## Endpoints
+
+```
+https://photo-app-backend.samuelbeard.now.sh
+
+
+/status -- Get the status of the API.
+
+/graphql -- Everything else.
+
+```
+
+---
+
 ## GraphQL Schema
 
 ### User
