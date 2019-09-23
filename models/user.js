@@ -1,13 +1,13 @@
-import mongoose, { Schema } from 'mongoose'
+const mongoose = require('mongoose')
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     name: { type: String, required: false },
     email: { type: String, required: true },
     password: { type: String, required: true, min: 8 },
-    posts: [{ type: Schema.ObjectId, ref: 'Post' }],
-    comments: [{ type: Schema.ObjectId, ref: 'Comment' }],
-    followers: [{ type: Schema.ObjectId, ref: 'User' }],
+    posts: [{ type: mongoose.Schema.ObjectId, ref: 'Post' }],
+    comments: [{ type: mongoose.Schema.ObjectId, ref: 'Comment' }],
+    followers: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
     status: {type: String, default: 'Active'},
     logged_in_at: { type: Date, default: null},
     created_at: { type: Date, default: Date.now },
@@ -15,4 +15,4 @@ const userSchema = new Schema({
     deleted_at: { type: Date, default: null },
 })
 
-export default mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema)

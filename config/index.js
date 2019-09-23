@@ -13,7 +13,9 @@ module.exports = {
     port: parseInt(process.env.PORT, 10),
 
     // Database
-    databaseURL: process.env.MONGODB_URI,
+    dbHost: process.env.DB_HOST,
+    dbUsername: process.env.DB_USERNAME,
+    dbPassword: process.env.DB_PASSWORD,
 
     // JWT
     jwtsecret: process.env.JTW_SECRET,

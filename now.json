@@ -1,6 +1,6 @@
 {
     "version": 2,
-    "builds": [{ "src": "app.js", "use": "@now/node-server"}],
+    "builds": [{ "src": "app.js", "use": "@now/node-server" }],
     "routes": [
         {
             "src": "/status",
@@ -11,6 +11,11 @@
             "src": "/graphql",
             "dest": "/app.js",
             "methods": ["POST"]
+        },
+        {
+            "src": "/graphql",
+            "dest": "/app.js",
+            "methods": ["GET"]
         }
     ]
 }

@@ -1,27 +1,38 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-// const morgan = require('morgan')
+const morgan = require('morgan')
+const graphqlHTTP =require("express-graphql")
+
+const graphQLSchema = require('../schema')
+const graphQLResolvers = require('../resolvers')
 
 // const routes = require('../routes')
-// const config = require('../config')
+const config = require('../config')
 
-/**
- * Health Checks
- */
 module.exports = app => {
-    app.get('/status', (req, res) => {
-        res.send("Hello")
-    })
-
     // Load up CORS
     app.use(cors())
 
-    // // Log API calls in the terminal.
-    // app.use(morgan('dev'))
-
+    app.get('/status', (req, res) => {
+        res.send('Hello')
+    })
+    
     // Transform raw strings to JSON in req.body
     app.use(bodyParser.json())
+
+    app.use(
+        '/graphql',
+        graphqlHTTP({
+            schema: graphQLSchema,
+            rootValue: graphQLResolvers,
+            graphiql: true,
+        })
+    )
+
+    // // Log API calls in the terminal.
+    app.use(morgan('dev'))
+
 
     // // Load Routes
     // app.use(config.api.prefix, routes())

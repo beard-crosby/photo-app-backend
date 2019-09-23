@@ -16,7 +16,7 @@ https://photo-app-backend.samuelbeard.now.sh
 
 ---
 
-## GraphQL Schema
+## GraphQL Models
 
 ### User
 - _id: ID!
@@ -27,6 +27,8 @@ https://photo-app-backend.samuelbeard.now.sh
 - posts: [Post!]!
 - comments: [Comment!]!
 - followers: [User!]!
+- status: String | The status of the account. ['active', 'banned', etc]
+- logged_in_at: Date! | This will be updated every time a user logs in.
 - created_at: Date!
 - updated_at Date!
 - deleted_at Date!
@@ -38,6 +40,7 @@ https://photo-app-backend.samuelbeard.now.sh
 - description: String
 - comments: [Comment!]!
 - image: String!
+- status: String | The status of the image. ['processing', 'removed', etc]
 - created_at: Date!
 - updated_at: Date!
 - deleted_at: Date!
@@ -45,7 +48,16 @@ https://photo-app-backend.samuelbeard.now.sh
 ### Comment
 - _id: ID!
 - author: User!
+- post: Post!
 - body: String!
 - created_at: Date!
 - updated_at: Date!
 - deleted_at: Date!
+
+## GraphQL Schema
+
+### UserInput | Used to create a new user.
+- email
+- username
+- password
+- confirm | Used to confirm the password. Can be confirmed on the frontend but still needs to be chaked on the backend.
