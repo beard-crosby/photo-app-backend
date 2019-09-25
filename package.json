@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "develop": "nodemon app"
+    "develop": "nodemon app",
+    "deploy": "now -e JWT_SECRET=@jwt_secret -e DB_USERNAME=@db_username -e DB_PASSWORD=@db_password -e DB_HOST=@db_host"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -17,7 +17,7 @@ module.exports = app => {
     app.get('/status', (req, res) => {
         res.send('Hello')
     })
-    
+
     // Transform raw strings to JSON in req.body
     app.use(bodyParser.json())
 

@@ -23,7 +23,7 @@ module.exports = buildSchema(`
 
     type Post {
         _id: ID!
-        title: String!
+        title: String
         description: String!
         image: String!
         author: User!
@@ -61,6 +61,9 @@ module.exports = buildSchema(`
 
         "Get a Users Information"
         getUser(_id: ID!, token: String!): User
+
+        "Get a users posts"
+        getPosts(author: ID!): [Post]
 
         "Verify a Token"
         verifyToken(token: String!): User

@@ -63,8 +63,8 @@ module.exports.login =  async function(args) {
 
         if (!passIsValid) throw new Error("Wrong Password")
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
+        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+            expiresIn: "100h",
         })
 
         return {
