@@ -25,7 +25,7 @@ module.exports = app => {
     })
 
     // Transform raw strings to JSON in req.body
-    app.use(bodyParser.json())
+    app.use(bodyParser.json({limit: '20mb'}))
 
     // Use our auth middleware
     app.use(auth)
@@ -38,6 +38,7 @@ module.exports = app => {
             graphiql: true,
         })
     )
+    console.log(`GraphiQL: http://localhost:${config.port}/graphql`)
 
     // // Log API calls in the terminal.
     app.use(morgan('dev'))

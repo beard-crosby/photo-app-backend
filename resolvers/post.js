@@ -12,11 +12,13 @@ module.exports.createPost = async function (args, req) {
         const now = new Date()
         const { title, description, image, author } = args.postInput
 
+        // async process the image
+
         const post = new Post(
             {
                 title,
                 description,
-                image,
+                image: "http://placehold.co/500x500",
                 author
             },
             err => {
@@ -33,10 +35,14 @@ module.exports.createPost = async function (args, req) {
         await user.posts.push(post)
         await user.save()
 
-        const populatedPost = await Post.findOne({
-            _id
-        }).populate("author")
-        return populatedPost
+        return {
+            ...post._doc
+        }
+
+        // const populatedPost = await Post.findOne({
+        //     _id
+        // }).populate("author")
+        // return populatedPost
 
 
 
