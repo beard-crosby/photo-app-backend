@@ -125,6 +125,9 @@ module.exports = buildSchema(`
         "Get a users posts"
         getPosts(author: ID!): [Post]
 
+        "Get a posts comments"
+        getComments(post: ID!): [Comment]
+
         "Verify a Token"
         verifyToken(token: String!): User
     }
