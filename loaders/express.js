@@ -7,6 +7,8 @@ const graphqlHTTP =require("express-graphql")
 const graphQLSchema = require('../schema')
 const graphQLResolvers = require('../resolvers')
 
+const auth = require('../middleware/auth')
+
 // const routes = require('../routes')
 const config = require('../config')
 
@@ -18,8 +20,15 @@ module.exports = app => {
         res.send('Hello')
     })
 
+    app.get('/', (req, res) => {
+        res.send('Umm... What are you doing here? There is nothing for you to see here.')
+    })
+
     // Transform raw strings to JSON in req.body
     app.use(bodyParser.json())
+
+    // Use our auth middleware
+    app.use(auth)
 
     app.use(
         '/graphql',

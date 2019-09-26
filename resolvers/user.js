@@ -5,11 +5,11 @@ const User = require("../models/user")
 
 module.exports.getUser =  async function(args, req) {
     // Check Auth
-    // if (process.env.APP_ENV !== "dev") {
-    //     if (!req.isAuth) {
-    //         throw new Error("Not Logged In")
-    //     }
-    // }
+    if (process.env.NODE_ENV !== "development") {
+        if (!req.isAuth) {
+            throw new Error("Not Logged In")
+        }
+    }
 
     try {
         const { _id, token } = args
@@ -21,13 +21,13 @@ module.exports.getUser =  async function(args, req) {
             if (_id === user._id && user._id === decoded.id) {
                 return true
             } else {
-                return false
+                throw new Error("Invalid Token")
             }
         }
 
         console.log(tokenIsValid(token))
 
-        return { 
+        return tokenIsValid(token) && { 
             ...user._doc,
         }
     } catch (e) {

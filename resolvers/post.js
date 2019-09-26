@@ -1,7 +1,13 @@
 const User = require('../models/user')
 const Post = require('../models/post')
 
-module.exports.createPost = async function (args) {
+module.exports.createPost = async function (args, req) {
+    if (process.env.NODE_ENV !== 'development') {
+        if (!req.isAuth) {
+            throw new Error("Not Logged In")
+        }
+    }
+    
     try {
         const now = new Date()
         const { title, description, image, author } = args.postInput
