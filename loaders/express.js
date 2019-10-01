@@ -9,7 +9,6 @@ const graphQLResolvers = require('../resolvers')
 
 const auth = require('../middleware/auth')
 
-// const routes = require('../routes')
 const config = require('../config')
 
 module.exports = app => {
@@ -43,36 +42,32 @@ module.exports = app => {
     // // Log API calls in the terminal.
     app.use(morgan('dev'))
 
+    // Catch 404 and forward to errors.
+    app.use((req, res, next) => {
+        const err = new Error('Not Found')
+        err['status'] = 404
+        next(err)
+    })
 
-    // // Load Routes
-    // app.use(config.api.prefix, routes())
-
-    // // Catch 404 and forward to errors.
-    // app.use((req, res, next) => {
-    //     const err = new Error('Not Found')
-    //     err['status'] = 404
-    //     next(err)
-    // })
-
-    // // Error handlers
-    // app.use((err, req, res, next) => {
-    //     /**
-    //      * Handle 401 thrown by express-jwt library
-    //      */
-    //     if (err.name === 'UnauthorizedError') {
-    //         return res
-    //             .status(err.status)
-    //             .send({ message: err.message })
-    //             .end()
-    //     }
-    //     return next(err)
-    // })
-    // app.use((err, req, res, next) => {
-    //     res.status(err.status || 500)
-    //     res.json({
-    //         errors: {
-    //             message: err.message,
-    //         },
-    //     })
-    // })
+    // Error handlers
+    app.use((err, req, res, next) => {
+        /**
+         * Handle 401 thrown by express-jwt library
+         */
+        if (err.name === 'UnauthorizedError') {
+            return res
+                .status(err.status)
+                .send({ message: err.message })
+                .end()
+        }
+        return next(err)
+    })
+    app.use((err, req, res, next) => {
+        res.status(err.status || 500)
+        res.json({
+            errors: {
+                message: err.message,
+            },
+        })
+    })
 }
