@@ -2,31 +2,214 @@
 
 ---
 
-## Endpoints
+## Deployment :boom:
 
-Check out everything GraphQL at https://photo-app-backend.samuelbeard.now.sh/graphql
+---
 
-All queries and mutations can be explored in the Docs Explorer (Top Right of /graphql page)
+# Queries :question:
 
 ```
-/status -- 
-GET - Get the status of the API.
+login( email: String!, password: String!) { # OR login( username: String!, password: String!)
+  _id
+  token
+  tokenExpiry
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+      }
+    }
+  }
+}
+```
 
-/graphql --
-POST - All graphQL queries.
-GET - Access GraphiQL in the browser.
+```
+users {
+  _id
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+      }
+    }
+  }
+}
+```
+
+```
+user(_id: ID!) {
+  _id
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+      }
+    }
+  }
+}
+```
+
+```
+posts {
+  _id
+  img
+  title
+  description
+  author
+  comments {
+    _id
+    comment
+  }
+}
+```
+
+```
+post(_id: ID) { # OR post(author: ID)
+    _id
+    img
+    title
+    description
+    author
+    comments {
+      _id
+      comment
+    }
+  }
 ```
 
 ---
 
-## Deployment
+# Mutations :exclamation:
 
-Currently, the backend is deployed on Zeit Now. So assuming you are logged in to the correct account, run this command to deploy:
+```
+createUser(userInput: { name: String!, username: String!, email: String!, password: String!, passConfirm: String! }) {
+  _id
+  token
+  tokenExpiry
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+      }
+    }
+  }
+}
+```
 
-```sh
-now -e JWT_SECRET=@jwt_secret -e DB_USERNAME=@db_username -e DB_PASSWORD=@db_password -e DB_HOST=@db_host
-
-# OR
-
-npm run deploy
+```
+createPost(postInput: { img: String!, title: String!, description: String!, author: ID! }) {
+  _id
+  img
+  title
+  description
+  author
+  comments {
+    _id
+    comment
+  }
+}
 ```

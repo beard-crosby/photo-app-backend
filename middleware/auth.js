@@ -17,9 +17,9 @@ module.exports = function (req, res, next) {
     let decodedToken
     try {
         decodedToken = jwt.verify(token, process.env.JWT_SECRET)
-    } catch(e) {
+    } catch(err) {
         req.isAuth = false
-        console.log(e)
+        console.log(err)
         return next()
     }
 
