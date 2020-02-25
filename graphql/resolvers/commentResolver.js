@@ -6,10 +6,10 @@ module.exports = {
     try {
       const tempPost = await Post.findOne({ _id: post })
       if (!tempPost) throw new Error("A Post by that ID was not found!")
-      console.log(tempPost)
 
       const tempComment = new Comment(
         {
+          post,
           comment,
           author
         },
@@ -18,11 +18,12 @@ module.exports = {
         }
       )
       
+      await tempComment.save()
       await tempPost.comments.push(tempComment)
       await tempPost.save()
 
       return {
-        ...tempComment._doc
+        ...tempPost._doc
       }
 
     } catch (err) {

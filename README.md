@@ -143,16 +143,31 @@ posts {
 
 ```
 post(_id: ID) { # OR post(author: ID)
+  _id
+  img
+  title
+  description
+  author {
     _id
-    img
-    title
-    description
-    author
-    comments {
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+  comments {
+    _id
+    comment
+    author {
       _id
-      comment
+      name
+      username
+      email
+      bio
+      profileImg
     }
   }
+}
 ```
 
 ---

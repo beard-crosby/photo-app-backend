@@ -4,7 +4,7 @@ module.exports = postSchema = `
     img: String!
     title: String!
     description: String
-    author: ID!
+    author: User!
     comments: [Comment!]!
   }
 
