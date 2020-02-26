@@ -9,7 +9,7 @@
 # Queries :question:
 
 ```
-login( email: String!, password: String!) { # OR login( username: String!, password: String!)
+login( email: String!, password: String!") { # OR login( username: String!, password: String!)
   _id
   token
   tokenExpiry
@@ -26,6 +26,9 @@ login( email: String!, password: String!) { # OR login( username: String!, passw
     comments {
       _id
       comment
+      author {
+        _id
+      }
     }
   }
   following {
@@ -43,6 +46,9 @@ login( email: String!, password: String!) { # OR login( username: String!, passw
       comments {
         _id
         comment
+        author {
+          _id
+        }
       }
     }
   }
@@ -231,42 +237,20 @@ comment(_id: ID!) { # OR comment(post: ID!) # OR comment(author: ID!)
 # Mutations :exclamation:
 
 ```
-createUser(userInput: { name: String!, username: String!, email: String!, password: String!, passConfirm: String! }) {
+createUser(userInput: { name: String!, username: String!, email: String!, password: String!, passConfirm: String!, bio: String, profileImg: String }) {
   _id
   token
   tokenExpiry
   name
   username
   email
-  bio
+  bio  
   profileImg
   posts {
     _id
-    img
-    title
-    description
-    comments {
-      _id
-      comment
-    }
   }
   following {
     _id
-    name
-    username
-    email
-    bio
-    profileImg
-    posts {
-      _id
-      img
-      title
-      description
-      comments {
-        _id
-        comment
-      }
-    }
   }
 }
 ```

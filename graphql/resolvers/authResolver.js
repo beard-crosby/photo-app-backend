@@ -57,10 +57,68 @@ module.exports = {
     try {
       let user = null
       if (email) {
-        user = await User.findOne({ email })
+        user = await User.findOne({ email }).populate([
+          {
+            path: 'posts',
+            model: 'Post',
+            populate: {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'author',
+                model: 'User',
+              }
+            }
+          },
+          {
+            path: 'following',
+            model: 'User',
+            populate: {
+              path: 'posts',
+              model: 'Post',
+              populate: {
+                path: 'comments',
+                model: 'Comment',
+                populate: {
+                  path: 'author',
+                  model: 'User',
+                }
+              }
+            }
+          },
+        ])
         if (!user) throw new Error("A User by that Email was not found!")
       } else {
-        user = await User.findOne({ username })
+        user = await User.findOne({ username }).populate([
+          {
+            path: 'posts',
+            model: 'Post',
+            populate: {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'author',
+                model: 'User',
+              }
+            }
+          },
+          {
+            path: 'following',
+            model: 'User',
+            populate: {
+              path: 'posts',
+              model: 'Post',
+              populate: {
+                path: 'comments',
+                model: 'Comment',
+                populate: {
+                  path: 'author',
+                  model: 'User',
+                }
+              }
+            }
+          },
+        ])
         if (!user) throw new Error("A User by that Username was not found!")
       }
   
