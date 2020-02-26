@@ -151,10 +151,40 @@ module.exports = {
   },
   allUsers: async () => {
     try {
-      const users = await User.find()
+      const users = await User.find().populate([
+        {
+          path: 'posts',
+          model: 'Post',
+          populate: {
+            path: 'comments',
+            model: 'Comment',
+            populate: {
+              path: 'author',
+              model: 'User',
+            }
+          }
+        },
+        {
+          path: 'following',
+          model: 'User',
+          populate: {
+            path: 'posts',
+            model: 'Post',
+            populate: {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'author',
+                model: 'User',
+              }
+            }
+          }
+        },
+      ])
+      if (!users) throw new Error("There aren't any Users! WHAA?!")
       return users.map(user => {
         return {
-          ...users._doc
+          ...user._doc
         }
       })
     } catch (err) {
@@ -163,7 +193,36 @@ module.exports = {
   },
   user: async ({ _id }) => {
     try {
-      const user = await User.findOne({ _id })
+      const user = await User.findOne({ _id }).populate([
+        {
+          path: 'posts',
+          model: 'Post',
+          populate: {
+            path: 'comments',
+            model: 'Comment',
+            populate: {
+              path: 'author',
+              model: 'User',
+            }
+          }
+        },
+        {
+          path: 'following',
+          model: 'User',
+          populate: {
+            path: 'posts',
+            model: 'Post',
+            populate: {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'author',
+                model: 'User',
+              }
+            }
+          }
+        },
+      ])
       if (!user) throw new Error("A User by that ID was not found!")
       return {
         ...user._doc

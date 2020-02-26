@@ -71,6 +71,9 @@ allUsers {
     comments {
       _id
       comment
+      author {
+        _id
+      }
     }
   }
   following {
@@ -88,6 +91,9 @@ allUsers {
       comments {
         _id
         comment
+        author {
+          _id
+        }
       }
     }
   }
@@ -110,6 +116,9 @@ user(_id: ID!) {
     comments {
       _id
       comment
+      author {
+        _id
+      }
     }
   }
   following {
@@ -127,6 +136,9 @@ user(_id: ID!) {
       comments {
         _id
         comment
+        author {
+          _id
+        }
       }
     }
   }
