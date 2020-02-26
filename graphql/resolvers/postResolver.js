@@ -120,4 +120,17 @@ module.exports = {
       throw err
     }
   },
+  deletePost: async ({ _id }) => {
+    try {
+      const post = await Post.findOne({ _id: _id })
+      if (!post) throw new Error("A Post by that ID was not found!")
+
+      await Post.deleteOne({ _id: _id })
+      return {
+        ...post._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  }
 }

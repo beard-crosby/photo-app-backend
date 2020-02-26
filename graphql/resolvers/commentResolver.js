@@ -113,4 +113,17 @@ module.exports = {
       throw err
     }
   },
+  deleteComment: async ({ _id }) => {
+    try {
+      const comment = await Comment.findOne({ _id: _id })
+      if (!comment) throw new Error("A Comment by that ID was not found!")
+
+      await Comment.deleteOne({ _id: _id })
+      return {
+        ...comment._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }

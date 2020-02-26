@@ -22,7 +22,9 @@ module.exports = buildSchema(`
     createUser(userInput: userInput): User
     deleteUser(_id: ID!): User
     createPost(postInput: postInput): Post
+    deletePost(_id: ID!): Post
     createComment(post: ID!, comment: String!, author: ID!): Comment
+    deleteComment(_id: ID!): Comment
   }
 
   schema {

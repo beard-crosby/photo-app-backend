@@ -318,3 +318,19 @@ deleteUser(_id: ID!) {
   profileImg
 }
 ```
+
+```
+deletePost(_id: ID!) {
+  _id
+  img
+  title
+  description
+}
+```
+
+```
+deleteComment(_id: ID!) {
+  _id
+  comment
+}
+```
