@@ -50,7 +50,7 @@ login( email: String!, password: String!) { # OR login( username: String!, passw
 ```
 
 ```
-users {
+allUsers {
   _id
   name
   username
@@ -128,15 +128,30 @@ user(_id: ID!) {
 ```
 
 ```
-posts {
+allPosts {
   _id
   img
   title
   description
-  author
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
   comments {
     _id
     comment
+    author {
+      _id
+      name
+      username
+      email
+      bio
+      profileImg
+    }
   }
 }
 ```
@@ -170,6 +185,47 @@ post(_id: ID) { # OR post(author: ID)
 }
 ```
 
+```
+allComments {
+  _id
+  post {
+    _id
+    img
+    title
+    description
+  }
+  comment
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+}
+```
+
+```
+comment(_id: ID!) { # OR comment(post: ID!) # OR comment(author: ID!)
+  _id
+  post {
+    _id
+    img
+    title
+    description
+  }
+  comment
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+}
+```
 ---
 
 # Mutations :exclamation:
@@ -221,10 +277,37 @@ createPost(postInput: { img: String!, title: String!, description: String!, auth
   img
   title
   description
-  author
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
   comments {
     _id
-    comment
+  }
+}
+```
+
+```
+createComment(post: ID!, comment: String!, author: ID!) {
+  _id
+  post {
+    _id
+    img
+    title
+    description
+  }
+  comment
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
   }
 }
 ```

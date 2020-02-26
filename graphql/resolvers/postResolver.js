@@ -5,10 +5,12 @@ module.exports = {
   createPost: async args => {
     try {
       const { img, title, description, author } = args.postInput
+      
       const user = await User.findOne({ _id: author })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      // const testPost = await Post.findOne({  }) // test for duplicate posts
+      const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
+      if (testPost) throw new Error("Duplicate Post!")
 
       const post = new Post(
         {
@@ -52,7 +54,7 @@ module.exports = {
       throw err
     }
   },
-  posts: async () => {
+  allPosts: async () => {
     try {
       const posts = await Post.find().populate([
         {

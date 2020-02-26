@@ -91,7 +91,7 @@ module.exports = {
       throw err
     }
   },
-  users: async () => {
+  allUsers: async () => {
     try {
       const users = await User.find()
       return users.map(user => {
