@@ -230,5 +230,18 @@ module.exports = {
     } catch (err) {
       throw err
     }
+  },
+  deleteUser: async ({ _id }) => {
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      await User.deleteOne({ _id: _id })
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
   }
 }

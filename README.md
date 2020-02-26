@@ -307,3 +307,14 @@ createComment(post: ID!, comment: String!, author: ID!) {
   }
 }
 ```
+
+```
+deleteUser(_id: ID!) {
+  _id
+  name
+  username
+  email
+  bio
+  profileImg
+}
+```
