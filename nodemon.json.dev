@@ -1,0 +1,7 @@
+{
+  "env": {
+    "JWT_SECRET": "octoCore",
+    "MONGO_USER": "Max",
+    "MONGO_PASS": "lIzEdlmbrX4QrwiO"
+  }
+}

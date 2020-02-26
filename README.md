@@ -2,31 +2,335 @@
 
 ---
 
-## Endpoints
-
-Check out everything GraphQL at https://photo-app-backend.samuelbeard.now.sh/graphql
-
-All queries and mutations can be explored in the Docs Explorer (Top Right of /graphql page)
-
-```
-/status -- 
-GET - Get the status of the API.
-
-/graphql --
-POST - All graphQL queries.
-GET - Access GraphiQL in the browser.
-```
+## Deployment :boom:
 
 ---
 
-## Deployment
+# Queries :question:
 
-Currently, the backend is deployed on Zeit Now. So assuming you are logged in to the correct account, run this command to deploy:
+```
+login( email: String!, password: String!") { # OR login( username: String!, password: String!)
+  _id
+  token
+  tokenExpiry
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+      author {
+        _id
+      }
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+        author {
+          _id
+        }
+      }
+    }
+  }
+}
+```
 
-```sh
-now -e JWT_SECRET=@jwt_secret -e DB_USERNAME=@db_username -e DB_PASSWORD=@db_password -e DB_HOST=@db_host
+```
+allUsers {
+  _id
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+      author {
+        _id
+      }
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+        author {
+          _id
+        }
+      }
+    }
+  }
+}
+```
 
-# OR
+```
+user(_id: ID!) {
+  _id
+  name
+  username
+  email
+  bio
+  profileImg
+  posts {
+    _id
+    img
+    title
+    description
+    comments {
+      _id
+      comment
+      author {
+        _id
+      }
+    }
+  }
+  following {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+    posts {
+      _id
+      img
+      title
+      description
+      comments {
+        _id
+        comment
+        author {
+          _id
+        }
+      }
+    }
+  }
+}
+```
 
-npm run deploy
+```
+allPosts {
+  _id
+  img
+  title
+  description
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+  comments {
+    _id
+    comment
+    author {
+      _id
+      name
+      username
+      email
+      bio
+      profileImg
+    }
+  }
+}
+```
+
+```
+post(_id: ID) { # OR post(author: ID)
+  _id
+  img
+  title
+  description
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+  comments {
+    _id
+    comment
+    author {
+      _id
+      name
+      username
+      email
+      bio
+      profileImg
+    }
+  }
+}
+```
+
+```
+allComments {
+  _id
+  post {
+    _id
+    img
+    title
+    description
+  }
+  comment
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+}
+```
+
+```
+comment(_id: ID!) { # OR comment(post: ID!) # OR comment(author: ID!)
+  _id
+  post {
+    _id
+    img
+    title
+    description
+  }
+  comment
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+}
+```
+---
+
+# Mutations :exclamation:
+
+```
+createUser(userInput: { name: String!, username: String!, email: String!, password: String!, passConfirm: String!, bio: String, profileImg: String }) {
+  _id
+  token
+  tokenExpiry
+  name
+  username
+  email
+  bio  
+  profileImg
+  posts {
+    _id
+  }
+  following {
+    _id
+  }
+}
+```
+
+```
+createPost(postInput: { img: String!, title: String!, description: String!, author: ID! }) {
+  _id
+  img
+  title
+  description
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+  comments {
+    _id
+  }
+}
+```
+
+```
+createComment(post: ID!, comment: String!, author: ID!) {
+  _id
+  post {
+    _id
+    img
+    title
+    description
+  }
+  comment
+  author {
+    _id
+    name
+    username
+    email
+    bio
+    profileImg
+  }
+}
+```
+
+```
+deleteUser(_id: ID!) {
+  _id
+  name
+  username
+  email
+  bio
+  profileImg
+}
+```
+
+```
+deletePost(_id: ID!) {
+  _id
+  img
+  title
+  description
+}
+```
+
+```
+deleteComment(_id: ID!) {
+  _id
+  comment
+}
 ```
