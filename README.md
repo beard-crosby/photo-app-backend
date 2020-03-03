@@ -101,7 +101,7 @@ allUsers {
 ```
 
 ```
-user(_id: ID!) {
+user(_id: ID!) { # requires authentication
   _id
   name
   username
@@ -175,7 +175,7 @@ allPosts {
 ```
 
 ```
-post(_id: ID) { # OR post(author: ID)
+post(_id: ID) { # OR post(author: ID) # requires authentication
   _id
   img
   title
@@ -225,7 +225,7 @@ allComments {
 ```
 
 ```
-comment(_id: ID!) { # OR comment(post: ID!) # OR comment(author: ID!)
+comment(_id: ID!) { # OR comment(post: ID!) # OR comment(author: ID!) # requires authentication
   _id
   post {
     _id
@@ -268,7 +268,7 @@ createUser(userInput: { name: String!, username: String!, email: String!, passwo
 ```
 
 ```
-createPost(postInput: { img: String!, title: String!, description: String!, author: ID! }) {
+createPost(postInput: { img: String!, title: String!, description: String!, author: ID! }) { # requires authentication
   _id
   img
   title
@@ -288,7 +288,7 @@ createPost(postInput: { img: String!, title: String!, description: String!, auth
 ```
 
 ```
-createComment(post: ID!, comment: String!, author: ID!) {
+createComment(post: ID!, comment: String!, author: ID!) { # requires authentication
   _id
   post {
     _id
@@ -309,7 +309,7 @@ createComment(post: ID!, comment: String!, author: ID!) {
 ```
 
 ```
-deleteUser(_id: ID!) {
+deleteUser(_id: ID!) { # requires authentication
   _id
   name
   username
@@ -320,7 +320,7 @@ deleteUser(_id: ID!) {
 ```
 
 ```
-deletePost(_id: ID!) {
+deletePost(_id: ID!) { # requires authentication
   _id
   img
   title
@@ -329,8 +329,18 @@ deletePost(_id: ID!) {
 ```
 
 ```
-deleteComment(_id: ID!) {
+deleteComment(_id: ID!) { # requires authentication
   _id
   comment
+}
+```
+
+```
+setDarkMode(_id: ID!) { # requires authentication
+  _id
+  name
+  username
+  email
+  dark_mode
 }
 ```

@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
 	username: { type: String, required: true },
 	email: { type: String, required: true },
 	bio: { type: String, required: false },
-	profileImg: { type: String, required: false },
+	profile_img: { type: String, required: false },
 	password: { type: String, required: true, min: 8 },
 	posts: [{ type: mongoose.Schema.ObjectId, ref: 'Post' }],
 	following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
 	logged_in_at: { type: Date, default: null },
 	created_at: { type: Date, default: Date.now },
 	updated_at: { type: Date, default: Date.now },
+	dark_mode: { type: Boolean, required: false },
 })
 
 module.exports = mongoose.model('User', userSchema)

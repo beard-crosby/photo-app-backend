@@ -6,14 +6,14 @@ const User = require("../../models/user")
 module.exports = {
   createUser: async args => {
     try {
-      const { name, username, email, bio, profileImg, password, passConfirm } = args.userInput
+      const { name, username, email, bio, profile_img, password, pass_confirm } = args.userInput
   
       const testUsername = await User.findOne({ username })
       const testEmail = await User.findOne({ email })
   
       if (testUsername) throw new Error("A User by that Username already exists!")
       if (testEmail) throw new Error("A User by that Email already exists!")
-      if (password !== passConfirm) throw new Error("Passwords don't match.")
+      if (password !== pass_confirm) throw new Error("Passwords don't match.")
   
       const hashedPass = await bcrypt.hash(password, 12)
   
@@ -23,7 +23,8 @@ module.exports = {
           username,
           email,
           bio,
-          profileImg,
+          profile_img,
+          dark_mode: false,
           password: hashedPass,
         },
         err => {
@@ -45,7 +46,7 @@ module.exports = {
   
       return {
         token,
-        tokenExpiry: 1,
+        token_expiry: 1,
         password: null,
         ...user._doc,
       }
@@ -140,7 +141,7 @@ module.exports = {
   
       return {
         token,
-        tokenExpiry: 1,
+        token_expiry: 1,
         password: null,
         ...user._doc,
       }
@@ -245,5 +246,23 @@ module.exports = {
     } catch (err) {
       throw err
     }
-  }
+  },
+  setDarkMode: async ({ _id }, req) => {
+    if (!req.isAuth) {
+      throw new Error('Not Authenticated!')
+    }
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      user.dark_mode = !user.dark_mode
+      await user.save()
+
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }
