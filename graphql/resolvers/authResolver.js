@@ -119,9 +119,8 @@ module.exports = {
             }
           },
         ])
-        if (!user) throw new Error("A User by that Username was not found!")
       }
-  
+      
       const passIsValid = await bcrypt.compareSync(
         password,
         user.password
@@ -231,7 +230,10 @@ module.exports = {
       throw err
     }
   },
-  deleteUser: async ({ _id }) => {
+  deleteUser: async ({ _id }, req) => {
+    if (!req.isAuth) {
+      throw new Error('Not Authenticated!')
+    }
     try {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
