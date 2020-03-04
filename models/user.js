@@ -11,8 +11,9 @@ const userSchema = new mongoose.Schema({
 	following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
 	status: { type: String, default: 'active' },
 	logged_in_at: { type: Date, default: null },
-	created_at: { type: Date, default: Date.now },
-	updated_at: { type: Date, default: Date.now },
+	logged_in_geolocation: { type: Object, default: null },
+	created_at: { type: Date, default: new Date() },
+	updated_at: { type: Date, default: new Date() },
 	dark_mode: { type: Boolean, required: false },
 })
 

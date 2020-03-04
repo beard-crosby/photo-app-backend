@@ -24,6 +24,7 @@ module.exports = {
           email,
           bio,
           profile_img,
+          logged_in_at: new Date(),
           dark_mode: false,
           password: hashedPass,
         },
@@ -138,6 +139,9 @@ module.exports = {
         `${process.env.JWT_SECRET}`, 
         { expiresIn: "1h" }
       )
+
+      user.logged_in_at = new Date()
+      await user.save()
   
       return {
         token,
