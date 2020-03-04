@@ -3,6 +3,8 @@ module.exports = authSchema = `
     _id: ID!
     token: String!
     token_expiry: Int!
+    logged_in_at: String
+    logged_in_geolocation: String
     name: String!
     username: String!
     email: String!
