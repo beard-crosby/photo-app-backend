@@ -344,3 +344,13 @@ setDarkMode(_id: ID!) { # requires authentication
   dark_mode
 }
 ```
+
+```
+updateGeolocation(_id: ID!, geolocation: String!) {
+  _id
+  name
+  username
+  email
+  geolocation
+}
+```
