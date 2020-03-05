@@ -24,7 +24,7 @@ module.exports = {
           email,
           bio,
           profile_img,
-          logged_in_at: new Date(),
+          logged_in_at: new Date().toString(),
           dark_mode: false,
           password: hashedPass,
         },
@@ -140,7 +140,7 @@ module.exports = {
         { expiresIn: "1h" }
       )
 
-      user.logged_in_at = new Date()
+      user.logged_in_at = new Date().toString()
       await user.save()
   
       return {
@@ -260,6 +260,7 @@ module.exports = {
       if (!user) throw new Error("A User by that ID was not found!")
 
       user.dark_mode = !user.dark_mode
+      user.updated_at = new Date()
       await user.save()
 
       return {

@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
 	posts: [{ type: mongoose.Schema.ObjectId, ref: 'Post' }],
 	following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
 	status: { type: String, default: 'active' },
-	logged_in_at: { type: Date, default: null },
+	logged_in_at: { type: String, default: null },
 	logged_in_geolocation: { type: Object, default: null },
 	created_at: { type: Date, default: new Date() },
 	updated_at: { type: Date, default: new Date() },
