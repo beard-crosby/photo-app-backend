@@ -7,10 +7,10 @@ module.exports = {
       const { img, title, description, author } = args.postInput
       
       const user = await User.findOne({ _id: author })
-      if (!user) throw new Error("A User by that ID was not found!")
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!"}))
 
       const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
-      if (testPost) throw new Error("Duplicate Post!")
+      if (testPost) throw new Error(JSON.stringify({ duplicatePost: "Duplicate Post!"}))
 
       const post = new Post(
         {
@@ -95,7 +95,7 @@ module.exports = {
             }
           },
         ])
-        if (!post) throw new Error("A Post by that ID was not found!")
+        if (!post) throw new Error(JSON.stringify({ _id: "A Post by that ID was not found!"}))
       } else {
         post = await Post.findOne({ author: author }).populate([
           {
@@ -111,7 +111,7 @@ module.exports = {
             }
           },
         ])
-        if (!post) throw new Error("A Post by that Author ID was not found!")
+        if (!post) throw new Error(JSON.stringify({ _id: "A Post by that Author ID was not found!"}))
       }
       return {
         ...post._doc
@@ -123,7 +123,7 @@ module.exports = {
   deletePost: async ({ _id }) => {
     try {
       const post = await Post.findOne({ _id: _id })
-      if (!post) throw new Error("A Post by that ID was not found!")
+      if (!post) throw new Error(JSON.stringify({ _id: "A Post by that ID was not found!"}))
 
       await Post.deleteOne({ _id: _id })
       return {

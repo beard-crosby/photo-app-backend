@@ -48,7 +48,19 @@ app.use((req, res, next) => {
 })
 
 // Connect to the MongoDB Atlas Database. If no port is specified in CLI use port 3001.
-mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@photoapp-styay.mongodb.net/test?retryWrites=true&w=majority`, 
+// mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@photoapp-styay.mongodb.net/test?retryWrites=true&w=majority`, 
+//   { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+//   .then(res => {
+//     const PORT = process.env.PORT || 3001
+//     app.listen(PORT, () =>
+//       console.log(`[index.js] Server started on port ${PORT}]`)
+//     )
+//   })
+//   .catch(err => {
+//     console.log(err)
+//   })
+
+mongoose.connect(`mongodb://localhost:27017/photo-app`, 
   { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
   .then(res => {
     const PORT = process.env.PORT || 3001

@@ -11,12 +11,12 @@ module.exports = {
       const testUsername = await User.findOne({ username })
       const testEmail = await User.findOne({ email })
   
-      if (testUsername) throw new Error("A User by that Username already exists!")
-      if (testEmail) throw new Error("A User by that Email already exists!")
-      if (password !== pass_confirm) throw new Error("Passwords don't match.")
+      if (testUsername) throw new Error(JSON.stringify({ username: "A User by that Username already exists!" }))
+      if (testEmail) throw new Error(JSON.stringify({ email: "A User by that Email already exists!" }))
+      if (password !== pass_confirm) throw new Error(JSON.stringify({ password: "Passwords do not match." }))
   
       const hashedPass = await bcrypt.hash(password, 12)
-  
+
       const user = new User(
         {
           name,
@@ -89,7 +89,7 @@ module.exports = {
             }
           },
         ])
-        if (!user) throw new Error("A User by that Email was not found!")
+        if (!user) throw new Error(JSON.stringify({ email: "A User by that Email was not found!" }))
       } else {
         user = await User.findOne({ username }).populate([
           {
@@ -128,7 +128,7 @@ module.exports = {
         user.password
       )
   
-      if (!passIsValid) throw new Error("Wrong Password")
+      if (!passIsValid) throw new Error(JSON.stringify({ password: "Wrong Password" }))
   
       const token = jwt.sign(
         { 
@@ -185,7 +185,7 @@ module.exports = {
           }
         },
       ])
-      if (!users) throw new Error("There aren't any Users! WHAA?!")
+      if (!users) throw new Error(JSON.stringify({ general: "There aren't any Users! WHAA?!" }))
       return users.map(user => {
         return {
           ...user._doc
@@ -227,7 +227,7 @@ module.exports = {
           }
         },
       ])
-      if (!user) throw new Error("A User by that ID was not found!")
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
       return {
         ...user._doc
       }
@@ -237,11 +237,11 @@ module.exports = {
   },
   deleteUser: async ({ _id }, req) => {
     if (!req.isAuth) {
-      throw new Error('Not Authenticated!')
+      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error("A User by that ID was not found!")
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       await User.deleteOne({ _id: _id })
       return {
@@ -253,11 +253,11 @@ module.exports = {
   },
   setDarkMode: async ({ _id }, req) => {
     if (!req.isAuth) {
-      throw new Error('Not Authenticated!')
+      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error("A User by that ID was not found!")
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       user.dark_mode = !user.dark_mode
       user.updated_at = new Date()
@@ -272,11 +272,11 @@ module.exports = {
   },
   updateGeolocation: async ({ _id, geolocation }, req) => {
     if (!req.isAuth) {
-      throw new Error('Not Authenticated!')
+      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error("A User by that ID was not found!")
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       user.geolocation = geolocation
       user.updated_at = new Date()
