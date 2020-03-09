@@ -11,8 +11,8 @@ module.exports = {
       const testUsername = await User.findOne({ username })
       const testEmail = await User.findOne({ email })
   
-      if (testUsername) throw new Error(JSON.stringify({ username: "A User by that Username already exists!" }))
-      if (testEmail) throw new Error(JSON.stringify({ email: "A User by that Email already exists!" }))
+      if (testUsername) throw new Error(JSON.stringify({ username: "An Account by that Username already exists!" }))
+      if (testEmail) throw new Error(JSON.stringify({ email: "An Account by that Email already exists!" }))
       if (password !== pass_confirm) throw new Error(JSON.stringify({ password: "Passwords do not match." }))
   
       const hashedPass = await bcrypt.hash(password, 12)
@@ -89,7 +89,7 @@ module.exports = {
             }
           },
         ])
-        if (!user) throw new Error(JSON.stringify({ email: "A User by that Email was not found!" }))
+        if (!user) throw new Error(JSON.stringify({ email: "An Account by that Email was not found!" }))
       } else {
         user = await User.findOne({ username }).populate([
           {
@@ -128,7 +128,7 @@ module.exports = {
         user.password
       )
   
-      if (!passIsValid) throw new Error(JSON.stringify({ password: "Wrong Password" }))
+      if (!passIsValid) throw new Error(JSON.stringify({ password: "Incorrect Password" }))
   
       const token = jwt.sign(
         { 
