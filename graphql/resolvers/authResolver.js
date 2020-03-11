@@ -121,13 +121,11 @@ module.exports = {
             }
           },
         ])
+        if (!user) throw new Error(JSON.stringify({ username: "An Account by that Username was not found!" }))
       }
       
-      const passIsValid = await bcrypt.compareSync(
-        password,
-        user.password
-      )
-  
+      if (!password) throw new Error(JSON.stringify({ password: "Please enter your password" }))
+      const passIsValid = bcrypt.compareSync( password, user.password )
       if (!passIsValid) throw new Error(JSON.stringify({ password: "Incorrect Password" }))
   
       const token = jwt.sign(
