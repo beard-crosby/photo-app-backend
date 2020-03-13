@@ -27,6 +27,8 @@ module.exports = buildSchema(`
     deleteComment(_id: ID!): Comment
     setDarkMode(_id: ID!): User
     updateGeolocation(_id: ID!, geolocation: String!): User
+    updateBio(_id: ID!, bio: String!): User
+    updateProfileImg(_id: ID!, profile_img: String!): User
   }
 
   schema {

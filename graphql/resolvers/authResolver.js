@@ -287,4 +287,42 @@ module.exports = {
       throw err
     }
   },
+  updateBio: async ({ _id, bio }, req) => {
+    if (!req.isAuth) {
+      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+    }
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+
+      user.bio = bio
+      user.updated_at = new Date()
+      await user.save()
+
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  updateProfileImg: async ({ _id, profile_img }, req) => {
+    if (!req.isAuth) {
+      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+    }
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+
+      user.profile_img = profile_img
+      user.updated_at = new Date()
+      await user.save()
+
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }
