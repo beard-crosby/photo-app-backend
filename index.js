@@ -60,6 +60,7 @@ app.use((req, res, next) => {
 //     console.log(err)
 //   })
 
+// Connect to a local MongoDB Database. If no port is specified in CLI use port 3001.
 mongoose.connect(`mongodb://localhost:27017/photo-app`, 
   { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
   .then(res => {
