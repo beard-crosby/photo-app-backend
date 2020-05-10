@@ -3,8 +3,5 @@
     "JWT_SECRET": "octoCore",
     "MONGO_USER": "Max",
     "MONGO_PASS": "lIzEdlmbrX4QrwiO",
-    "AWS_BUCKET": "photoapp118",
-    "AWS_ACCESS_KEY_ID": "AKIAJR4XPKVQW5MF2HYA",
-    "AWS_SECRET_ACCESS_KEY": "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"
   }
 }
