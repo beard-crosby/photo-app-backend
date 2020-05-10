@@ -19,6 +19,7 @@ module.exports = buildSchema(`
   }
 
   type rootMutation {
+    signS3(filename: String!, filetype: String!): S3Payload!
     createUser(userInput: userInput): User
     deleteUser(_id: ID!): User
     createPost(postInput: postInput): Post

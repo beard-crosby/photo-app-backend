@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const aws = require("aws-sdk")
 
 const User = require("../../models/user")
 
@@ -320,6 +321,37 @@ module.exports = {
 
       return {
         ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  signS3: ({ filename, filetype }, req) => {
+    if (!req.isAuth) {
+      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+    }
+    try {
+      const s3 = new aws.S3({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        signatureVersion: 'v4',
+        region: 'eu-west-2',
+      })
+
+      const s3Params = {
+        Bucket: process.env.AWS_BUCKET,
+        Key: filename,
+        Expires: 60,
+        ContentType: filetype,
+        ACL: 'public-read',
+      }
+
+      const signedRequest = s3.getSignedUrl('putObject', s3Params)
+      const url = `http://${process.env.AWS_BUCKET}.s3-website.eu-west-2.amazonaws.com/${filename}`
+
+      return {
+        signedRequest,
+        url,
       }
     } catch (err) {
       throw err
