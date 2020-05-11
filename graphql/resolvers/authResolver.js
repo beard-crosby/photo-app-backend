@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const aws = require("aws-sdk")
+const moment = require("moment")
 
 const User = require("../../models/user")
 
@@ -25,7 +26,7 @@ module.exports = {
           email,
           bio,
           profile_img,
-          logged_in_at: new Date().toString(),
+          logged_in_at: moment().format(),
           dark_mode: false,
           password: hashedPass,
         },
@@ -139,7 +140,7 @@ module.exports = {
         { expiresIn: "1h" }
       )
 
-      user.logged_in_at = new Date().toString()
+      user.logged_in_at = moment().format()
       await user.save()
   
       return {
@@ -259,7 +260,7 @@ module.exports = {
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       user.dark_mode = !user.dark_mode
-      user.updated_at = new Date()
+      user.updated_at = moment().format()
       await user.save()
 
       return {
@@ -278,7 +279,7 @@ module.exports = {
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       user.geolocation = geolocation
-      user.updated_at = new Date()
+      user.updated_at = moment().format()
       await user.save()
 
       return {
@@ -297,7 +298,7 @@ module.exports = {
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       user.bio = bio
-      user.updated_at = new Date()
+      user.updated_at = moment().format()
       await user.save()
 
       return {
@@ -316,7 +317,7 @@ module.exports = {
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
 
       user.profile_img = profile_img
-      user.updated_at = new Date()
+      user.updated_at = moment().format()
       await user.save()
 
       return {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment')
 
 const userSchema = new mongoose.Schema({
 	name: { type: String, required: true },
@@ -12,8 +13,8 @@ const userSchema = new mongoose.Schema({
 	status: { type: String, default: 'active' },
 	logged_in_at: { type: String, default: null },
 	geolocation: { type: Object, default: null },
-	created_at: { type: Date, default: new Date() },
-	updated_at: { type: Date, default: new Date() },
+	created_at: { type: Date, default: moment().format() },
+	updated_at: { type: Date, default: moment().format() },
 	dark_mode: { type: Boolean, required: false },
 })
 
