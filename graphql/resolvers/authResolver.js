@@ -29,6 +29,8 @@ module.exports = {
           logged_in_at: moment().format(),
           dark_mode: false,
           password: hashedPass,
+          created_at: moment().format(),
+          updated_at: moment().format(),
         },
         err => {
           if (err) throw err

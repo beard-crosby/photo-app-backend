@@ -14,7 +14,9 @@ module.exports = {
         {
           post,
           comment,
-          author
+          author,
+          created_at: moment().format(),
+          updated_at: moment().format(),
         },
         err => {
           if (err) throw err
