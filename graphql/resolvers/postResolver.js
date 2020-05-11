@@ -10,9 +10,9 @@ module.exports = {
       const user = await User.findOne({ _id: author })
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!"}))
 
-      // const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
-      // if (testPost) throw new Error(JSON.stringify({ duplicatePost: "Duplicate Post!"}))
-
+      const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
+      if (testPost) throw new Error(JSON.stringify({ duplicatePost: "Duplicate Post!"}))
+      
       const post = new Post(
         {
           img,
@@ -27,6 +27,7 @@ module.exports = {
       
       let post_id = null
       await post.save(function(err, post) {
+        if (err) throw new Error(err)
         post_id = post._id
       })
 
