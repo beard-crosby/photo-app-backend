@@ -13,8 +13,8 @@ const userSchema = new mongoose.Schema({
 	status: { type: String, default: 'active' },
 	logged_in_at: { type: String, default: null },
 	geolocation: { type: Object, default: null },
-	created_at: { type: Date, default: moment().format() },
-	updated_at: { type: Date, default: moment().format() },
+	created_at: { type: String, default: moment().format() },
+	updated_at: { type: String, default: moment().format() },
 	dark_mode: { type: Boolean, required: false },
 })
 

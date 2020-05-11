@@ -1,16 +1,17 @@
 const User = require('../../models/user')
 const Post = require('../../models/post')
+const moment = require("moment")
 
 module.exports = {
   createPost: async args => {
     try {
       const { img, title, description, author } = args.postInput
-      
+
       const user = await User.findOne({ _id: author })
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!"}))
 
-      const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
-      if (testPost) throw new Error(JSON.stringify({ duplicatePost: "Duplicate Post!"}))
+      // const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
+      // if (testPost) throw new Error(JSON.stringify({ duplicatePost: "Duplicate Post!"}))
 
       const post = new Post(
         {
@@ -28,6 +29,7 @@ module.exports = {
       await post.save(function(err, post) {
         post_id = post._id
       })
+
       await user.posts.push(post)
       await user.save()
 
@@ -45,7 +47,7 @@ module.exports = {
           }
         },
       ])
-      
+
       return {
         ...findPost._doc
       }

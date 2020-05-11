@@ -7,8 +7,8 @@ const postSchema = new mongoose.Schema({
   description: { type: String, required: true },
   author: { type: String, required: true },
   comments: [{ type: mongoose.Schema.ObjectId, ref: 'Comment' }],
-  created_at: { type: Date, default: moment().format() },
-  updated_at: { type: Date, default: moment().format() },
+  created_at: { type: String, default: moment().format() },
+  updated_at: { type: String, default: moment().format() },
 })
 
 module.exports = mongoose.model('Post', postSchema)

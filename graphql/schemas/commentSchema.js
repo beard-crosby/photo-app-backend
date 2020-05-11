@@ -4,5 +4,7 @@ module.exports = commentSchema = `
     post: Post!
     comment: String!
     author: User!
+    created_at: String
+    updated_at: String
   }
 `

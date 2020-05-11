@@ -5,6 +5,8 @@ module.exports = postSchema = `
     title: String!
     description: String
     author: User!
+    created_at: String
+    updated_at: String
     comments: [Comment!]!
   }
 
