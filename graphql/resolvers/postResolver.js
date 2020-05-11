@@ -26,7 +26,7 @@ module.exports = {
       )
       
       let post_id = null
-      await post.save(function(err, post) {
+      await post.save((err, post) => {
         if (err) throw new Error(err)
         post_id = post._id
       })
