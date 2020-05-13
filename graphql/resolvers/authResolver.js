@@ -7,12 +7,10 @@ const User = require("../../models/user")
 module.exports = {
   createUser: async args => {
     try {
-      const { name, username, email, bio, profile_img, password, pass_confirm } = args.userInput
+      const { name, email, password, pass_confirm } = args.userInput
   
-      const testUsername = await User.findOne({ username })
       const testEmail = await User.findOne({ email })
-  
-      if (testUsername) throw new Error(JSON.stringify({ username: "An Account by that Username already exists!" }))
+
       if (testEmail) throw new Error(JSON.stringify({ email: "An Account by that Email already exists!" }))
       if (password !== pass_confirm) throw new Error(JSON.stringify({ password: "Passwords do not match." }))
   
@@ -21,8 +19,8 @@ module.exports = {
       const user = new User(
         {
           name,
-          username,
           email,
+          website: "",
           bio: "",
           profile_img: "https://photoapp118.s3.eu-west-2.amazonaws.com/placeholder",
           logged_in_at: moment().format(),
@@ -41,8 +39,7 @@ module.exports = {
       const token = jwt.sign(
         {
           id: user._id,
-          email: user.email, 
-          username: user.username 
+          email: user.email,
         },
         `${process.env.JWT_SECRET}`,
         { expiresIn: "1h" }
@@ -58,12 +55,25 @@ module.exports = {
       throw err
     }
   },
-  login: async ({ email, username, password }) => {
+  login: async ({ email, password }) => {
     try {
-      let user = null
-      if (email) {
-        user = await User.findOne({ email }).populate([
-          {
+      const user = await User.findOne({ email }).populate([
+        {
+          path: 'posts',
+          model: 'Post',
+          populate: {
+            path: 'comments',
+            model: 'Comment',
+            populate: {
+              path: 'author',
+              model: 'User',
+            }
+          }
+        },
+        {
+          path: 'following',
+          model: 'User',
+          populate: {
             path: 'posts',
             model: 'Post',
             populate: {
@@ -74,59 +84,10 @@ module.exports = {
                 model: 'User',
               }
             }
-          },
-          {
-            path: 'following',
-            model: 'User',
-            populate: {
-              path: 'posts',
-              model: 'Post',
-              populate: {
-                path: 'comments',
-                model: 'Comment',
-                populate: {
-                  path: 'author',
-                  model: 'User',
-                }
-              }
-            }
-          },
-        ])
-        if (!user) throw new Error(JSON.stringify({ email: "An Account by that Email was not found!" }))
-      } else {
-        user = await User.findOne({ username }).populate([
-          {
-            path: 'posts',
-            model: 'Post',
-            populate: {
-              path: 'comments',
-              model: 'Comment',
-              populate: {
-                path: 'author',
-                model: 'User',
-              }
-            }
-          },
-          {
-            path: 'following',
-            model: 'User',
-            populate: {
-              path: 'posts',
-              model: 'Post',
-              populate: {
-                path: 'comments',
-                model: 'Comment',
-                populate: {
-                  path: 'author',
-                  model: 'User',
-                }
-              }
-            }
-          },
-        ])
-        if (!user) throw new Error(JSON.stringify({ username: "An Account by that Username was not found!" }))
-      }
-      
+          }
+        },
+      ])
+      if (!user) throw new Error(JSON.stringify({ email: "An Account by that Email was not found!" }))
       if (!password) throw new Error(JSON.stringify({ password: "Please enter your password" }))
       const passIsValid = bcrypt.compareSync( password, user.password )
       if (!passIsValid) throw new Error(JSON.stringify({ password: "Incorrect Password" }))
@@ -134,8 +95,7 @@ module.exports = {
       const token = jwt.sign(
         { 
           _id: user._id, 
-          email: user.email, 
-          username: user.username 
+          email: user.email,
         }, 
         `${process.env.JWT_SECRET}`, 
         { expiresIn: "1h" }
@@ -186,7 +146,7 @@ module.exports = {
           }
         },
       ])
-      if (!users) throw new Error(JSON.stringify({ general: "There aren't any Users! WHAA?!" }))
+      if (!users) throw new Error(JSON.stringify({ general: "There aren't any Users! Houston, we have a problem..." }))
       return users.map(user => {
         return {
           ...user._doc

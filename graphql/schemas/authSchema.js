@@ -6,8 +6,8 @@ module.exports = authSchema = `
     logged_in_at: String
     geolocation: String
     name: String!
-    username: String!
     email: String!
+    website: String
     bio: String
     profile_img: String
     posts: [Post]
@@ -19,10 +19,7 @@ module.exports = authSchema = `
 
   input userInput {
     name: String!
-    username: String!
     email: String!
-    bio: String
-    profile_img: String
     password: String!
     pass_confirm: String!
   }

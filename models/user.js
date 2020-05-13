@@ -3,8 +3,8 @@ const moment = require('moment')
 
 const userSchema = new mongoose.Schema({
 	name: { type: String, required: true },
-	username: { type: String, required: true },
 	email: { type: String, required: true },
+	website: { type: String, required: false },
 	bio: { type: String, required: false },
 	profile_img: { type: String, required: false },
 	password: { type: String, required: true, min: 8 },
