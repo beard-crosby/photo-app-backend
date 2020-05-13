@@ -1,4 +1,5 @@
 const User = require("../../models/user")
+const moment = require("moment")
 const aws = require("aws-sdk")
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
-
+      console.log('ran')
       user.dark_mode = !user.dark_mode
       user.updated_at = moment().format()
       await user.save()
