@@ -24,8 +24,8 @@ module.exports = {
           name,
           username,
           email,
-          bio,
-          profile_img,
+          bio: "",
+          profile_img: "https://photoapp118.s3.eu-west-2.amazonaws.com/placeholder",
           logged_in_at: moment().format(),
           dark_mode: false,
           password: hashedPass,
@@ -350,7 +350,7 @@ module.exports = {
       }
 
       const signedRequest = s3.getSignedUrl('putObject', s3Params)
-      const url = `http://${process.env.AWS_BUCKET}.s3-website.eu-west-2.amazonaws.com/${filename}`
+      const url = `http://${process.env.AWS_BUCKET}.s3.eu-west-2.amazonaws.com/${filename}`
 
       return {
         signedRequest,
