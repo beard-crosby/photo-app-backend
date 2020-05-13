@@ -26,9 +26,4 @@ module.exports = authSchema = `
     password: String!
     pass_confirm: String!
   }
-
-  type S3Payload {
-    signedRequest: String!,
-    url: String!,
-  }
 `

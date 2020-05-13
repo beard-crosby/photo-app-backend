@@ -2,11 +2,13 @@ const { buildSchema } = require("graphql")
 const authSchema = require("./authSchema")
 const postSchema = require("./postSchema")
 const commentSchema = require("./commentSchema")
+const miscSchema = require('./miscSchema')
 
 module.exports = buildSchema(`
   ${authSchema}
   ${postSchema}
   ${commentSchema}
+  ${miscSchema}
 
   type rootQuery {
     user(_id: ID!): User!
