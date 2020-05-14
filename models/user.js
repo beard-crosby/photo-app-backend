@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
 	geolocation: { type: Object, default: null },
 	created_at: { type: String, default: moment().format() },
 	updated_at: { type: String, default: moment().format() },
-	dark_mode: { type: Boolean, required: false },
+	settings: { type: Object, required: false },
 })
 
 module.exports = mongoose.model('User', userSchema)

@@ -10,8 +10,11 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
-      console.log('ran')
-      user.dark_mode = !user.dark_mode
+      
+      const settings = JSON.parse(user.settings)
+      settings.dark_mode = !settings.dark_mode
+
+      user.settings = JSON.stringify(settings)
       user.updated_at = moment().format()
       await user.save()
 

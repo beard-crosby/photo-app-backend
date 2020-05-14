@@ -12,9 +12,9 @@ module.exports = authSchema = `
     profile_img: String
     posts: [Post]
     following: [User]
-    dark_mode: Boolean!
     created_at: String
     updated_at: String
+    settings: String
   }
 
   input userInput {

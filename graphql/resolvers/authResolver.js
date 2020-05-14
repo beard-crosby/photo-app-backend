@@ -24,10 +24,14 @@ module.exports = {
           bio: "",
           profile_img: "https://photoapp118.s3.eu-west-2.amazonaws.com/placeholder",
           logged_in_at: moment().format(),
-          dark_mode: false,
           password: hashedPass,
           created_at: moment().format(),
           updated_at: moment().format(),
+          settings: JSON.stringify({ 
+            dark_mode: false,
+            own_posts: true,
+            display_email: false,
+          }),
         },
         err => {
           if (err) throw err
