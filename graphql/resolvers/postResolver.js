@@ -3,15 +3,18 @@ const Post = require('../../models/post')
 const moment = require("moment")
 
 module.exports = {
-  createPost: async args => {
+  createPost: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const { img, title, description, author } = args.postInput
 
       const user = await User.findOne({ _id: author })
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!"}))
+      if (!user) throw new Error("A User by that ID was not found!")
 
       const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
-      if (testPost) throw new Error(JSON.stringify({ duplicatePost: "Duplicate Post!"}))
+      if (testPost) throw new Error("Duplicate Post!")
       
       const post = new Post(
         {
@@ -23,7 +26,7 @@ module.exports = {
           updated_at: moment().format(),
         },
         err => {
-          if (err) throw err
+          if (err) throw new Error(err)
         }
       )
       
@@ -59,7 +62,10 @@ module.exports = {
       throw err
     }
   },
-  allPosts: async () => {
+  allPosts: async req => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const posts = await Post.find().populate([
         {
@@ -75,6 +81,7 @@ module.exports = {
           }
         },
       ])
+      if (!posts) throw new Error("There aren't any Posts! Houston, we have a problem...")
       return posts.map(post => {
         return post
       })
@@ -82,7 +89,10 @@ module.exports = {
       throw err
     }
   },
-  post: async ({ _id, author }) => {
+  post: async ({ _id, author }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       let post = null
       if (_id) {
@@ -100,7 +110,7 @@ module.exports = {
             }
           },
         ])
-        if (!post) throw new Error(JSON.stringify({ _id: "A Post by that ID was not found!"}))
+        if (!post) throw new Error("A Post by that ID was not found!")
       } else {
         post = await Post.findOne({ author: author }).populate([
           {
@@ -116,7 +126,7 @@ module.exports = {
             }
           },
         ])
-        if (!post) throw new Error(JSON.stringify({ _id: "A Post by that Author ID was not found!"}))
+        if (!post) throw new Error("A Post by that Author ID was not found!")
       }
       return {
         ...post._doc
@@ -125,10 +135,13 @@ module.exports = {
       throw err
     }
   },
-  deletePost: async ({ _id }) => {
+  deletePost: async ({ _id }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const post = await Post.findOne({ _id: _id })
-      if (!post) throw new Error(JSON.stringify({ _id: "A Post by that ID was not found!"}))
+      if (!post) throw new Error("A Post by that ID was not found!")
 
       await Post.deleteOne({ _id: _id })
       return {

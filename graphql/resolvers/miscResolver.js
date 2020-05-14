@@ -5,11 +5,11 @@ const aws = require("aws-sdk")
 module.exports = {
   setDarkMode: async ({ _id }, req) => {
     if (!req.isAuth) {
-      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+      throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+      if (!user) throw new Error("A User by that ID was not found!")
       
       const settings = JSON.parse(user.settings)
       settings.dark_mode = !settings.dark_mode
@@ -27,7 +27,7 @@ module.exports = {
   },
   signS3: ({ filename, filetype }, req) => {
     if (!req.isAuth) {
-      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+      throw new Error("Not Authenticated!")
     }
     try {
       const s3 = new aws.S3({

@@ -11,8 +11,8 @@ module.exports = {
   
       const testEmail = await User.findOne({ email })
 
-      if (testEmail) throw new Error(JSON.stringify({ email: "An Account by that Email already exists!" }))
-      if (password !== pass_confirm) throw new Error(JSON.stringify({ password: "Passwords do not match." }))
+      if (testEmail) throw new Error("An Account by that Email already exists!")
+      if (password !== pass_confirm) throw new Error("Passwords do not match.")
   
       const hashedPass = await bcrypt.hash(password, 12)
 
@@ -34,7 +34,7 @@ module.exports = {
           }),
         },
         err => {
-          if (err) throw err
+          if (err) throw new Error(err)
         }
       )
   
@@ -91,10 +91,12 @@ module.exports = {
           }
         },
       ])
-      if (!user) throw new Error(JSON.stringify({ email: "An Account by that Email was not found!" }))
-      if (!password) throw new Error(JSON.stringify({ password: "Please enter your password" }))
+
+      if (!user) throw new Error("An Account by that Email was not found!")
+      if (!password) throw new Error("Please enter your password")
+      
       const passIsValid = bcrypt.compareSync( password, user.password )
-      if (!passIsValid) throw new Error(JSON.stringify({ password: "Incorrect Password" }))
+      if (!passIsValid) throw new Error("Incorrect Password")
   
       const token = jwt.sign(
         { 
@@ -150,7 +152,7 @@ module.exports = {
           }
         },
       ])
-      if (!users) throw new Error(JSON.stringify({ general: "There aren't any Users! Houston, we have a problem..." }))
+      if (!users) throw new Error("There aren't any Users! Houston, we have a problem...")
       return users.map(user => {
         return {
           ...user._doc
@@ -192,7 +194,7 @@ module.exports = {
           }
         },
       ])
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+      if (!user) throw new Error("A User by that ID was not found!")
       return {
         ...user._doc
       }
@@ -202,11 +204,11 @@ module.exports = {
   },
   deleteUser: async ({ _id }, req) => {
     if (!req.isAuth) {
-      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+      throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+      if (!user) throw new Error("A User by that ID was not found!")
 
       await User.deleteOne({ _id: _id })
       return {
@@ -218,11 +220,11 @@ module.exports = {
   },
   updateGeolocation: async ({ _id, geolocation }, req) => {
     if (!req.isAuth) {
-      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+      throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+      if (!user) throw new Error("A User by that ID was not found!")
 
       user.geolocation = geolocation
       user.updated_at = moment().format()
@@ -237,11 +239,11 @@ module.exports = {
   },
   updateBio: async ({ _id, bio }, req) => {
     if (!req.isAuth) {
-      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+      throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+      if (!user) throw new Error("A User by that ID was not found!")
 
       user.bio = bio
       user.updated_at = moment().format()
@@ -256,11 +258,11 @@ module.exports = {
   },
   updateProfileImg: async ({ _id, profile_img }, req) => {
     if (!req.isAuth) {
-      throw new Error(JSON.stringify({ auth: 'Not Authenticated!'}))
+      throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error(JSON.stringify({ _id: "A User by that ID was not found!" }))
+      if (!user) throw new Error("A User by that ID was not found!")
 
       user.profile_img = profile_img
       user.updated_at = moment().format()

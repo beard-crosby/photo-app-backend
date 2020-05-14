@@ -2,13 +2,16 @@ const Post = require('../../models/post')
 const Comment = require('../../models/comment')
 
 module.exports = {
-  createComment: async ({ post, comment, author }) => {
+  createComment: async ({ post, comment, author }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const tempPost = await Post.findOne({ _id: post })
-      if (!tempPost) throw new Error(JSON.stringify({ _id: "A Post by that ID was not found!"}))
+      if (!tempPost) throw new Error("A Post by that ID was not found!")
 
       const testComment = await Comment.findOne({ post: post, comment: comment, author: author })
-      if (testComment) throw new Error(JSON.stringify({ duplicateComment: "Duplicate Comment!"}))
+      if (testComment) throw new Error("Duplicate Comment!")
 
       const newComment = new Comment(
         {
@@ -19,12 +22,13 @@ module.exports = {
           updated_at: moment().format(),
         },
         err => {
-          if (err) throw err
+          if (err) throw new Error(err)
         }
       )
       
       comment_id = null
       await newComment.save(function(err, comment) {
+        if (err) throw new Error(err)
         comment_id = comment._id
       })
       await tempPost.comments.push(newComment)
@@ -49,7 +53,10 @@ module.exports = {
       throw err
     }
   },
-  allComments: async () => {
+  allComments: async req => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const comments = await Comment.find().populate([
         {
@@ -68,7 +75,10 @@ module.exports = {
       throw err
     }
   },
-  comment: async ({ _id, post, author }) => {
+  comment: async ({ _id, post, author }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       let comment = null
       if (_id) {
@@ -82,7 +92,7 @@ module.exports = {
             model: 'User',
           },
         ])
-        if (!comment) throw new Error(JSON.stringify({ _id: "A Comment by that ID was not found!"}))
+        if (!comment) throw new Error("A Comment by that ID was not found!")
       } else if (post) {
         comment = await Comment.findOne({ post: post }).populate([
           {
@@ -94,7 +104,7 @@ module.exports = {
             model: 'User',
           },
         ])
-        if (!comment) throw new Error(JSON.stringify({ post: "A Comment on that Post was not found!"}))
+        if (!comment) throw new Error("A Comment on that Post was not found!")
       } else {
         comment = await Comment.findOne({ author: author }).populate([
           {
@@ -106,7 +116,7 @@ module.exports = {
             model: 'User',
           },
         ])
-        if (!comment) throw new Error(JSON.stringify({ author: "A Comment by that Author was not found!"}))
+        if (!comment) throw new Error("A Comment by that Author was not found!")
       }
       return {
         ...comment._doc
@@ -115,10 +125,13 @@ module.exports = {
       throw err
     }
   },
-  deleteComment: async ({ _id }) => {
+  deleteComment: async ({ _id }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const comment = await Comment.findOne({ _id: _id })
-      if (!comment) throw new Error(JSON.stringify({ _id: "A Comment by that ID was not found!"}))
+      if (!comment) throw new Error("A Comment by that ID was not found!")
 
       await Comment.deleteOne({ _id: _id })
       return {
