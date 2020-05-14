@@ -3,7 +3,7 @@ const moment = require("moment")
 const aws = require("aws-sdk")
 
 module.exports = {
-  setDarkMode: async ({ _id }, req) => {
+  updateSettings: async ({ _id, settings }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -11,10 +11,7 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
       
-      const settings = JSON.parse(user.settings)
-      settings.dark_mode = !settings.dark_mode
-
-      user.settings = JSON.stringify(settings)
+      user.settings = settings
       user.updated_at = moment().format()
       await user.save()
 
