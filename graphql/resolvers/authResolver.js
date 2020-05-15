@@ -31,6 +31,7 @@ module.exports = {
             dark_mode: false,
             own_posts: true,
             display_email: false,
+            display_website: true,
           }),
         },
         err => {
