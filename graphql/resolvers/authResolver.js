@@ -22,7 +22,7 @@ module.exports = {
           email,
           website: "",
           bio: "",
-          profile_img: "https://photoapp118.s3.eu-west-2.amazonaws.com/placeholder",
+          profile_picture: "",
           logged_in_at: moment().format(),
           password: hashedPass,
           created_at: moment().format(),
@@ -256,7 +256,7 @@ module.exports = {
       throw err
     }
   },
-  updateProfileImg: async ({ _id, profile_img }, req) => {
+  updatePP: async ({ _id, profile_picture }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -264,7 +264,7 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      user.profile_img = profile_img
+      user.profile_picture = profile_picture
       user.updated_at = moment().format()
       await user.save()
 

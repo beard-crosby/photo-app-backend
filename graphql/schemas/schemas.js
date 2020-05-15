@@ -31,7 +31,7 @@ module.exports = buildSchema(`
     updateSettings(_id: ID!, settings: String!): User
     updateGeolocation(_id: ID!, geolocation: String!): User
     updateBio(_id: ID!, bio: String!): User
-    updateProfileImg(_id: ID!, profile_img: String!): User
+    updatePP(_id: ID!, profile_picture: String!): User
   }
 
   schema {

@@ -9,7 +9,7 @@ module.exports = authSchema = `
     email: String!
     website: String
     bio: String
-    profile_img: String
+    profile_picture: String
     posts: [Post]
     following: [User]
     created_at: String
