@@ -62,10 +62,7 @@ module.exports = {
       throw err
     }
   },
-  allPosts: async req => {
-    if (!req.isAuth) {
-      throw new Error("Not Authenticated!")
-    }
+  allPosts: async () => {
     try {
       const posts = await Post.find().populate([
         {
