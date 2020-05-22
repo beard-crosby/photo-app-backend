@@ -31,12 +31,13 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      user.geolocation = geolocation
+      user.geolocation = JSON.parse(geolocation)
       user.updated_at = moment().format()
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
+        geolocation: geolocation
       }
     } catch (err) {
       throw err

@@ -125,7 +125,8 @@ module.exports = {
         token_expiry: 1,
         password: null,
         ...user._doc,
-        settings: JSON.stringify(user._doc.settings)
+        geolocation: JSON.stringify(user._doc.geolocation),
+        settings: JSON.stringify(user._doc.settings),
       }
     } catch (err) {
       throw err
