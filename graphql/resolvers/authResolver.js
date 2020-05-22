@@ -18,6 +18,7 @@ module.exports = {
 
       const user = new User(
         {
+          active: true,
           name,
           email,
           website: "",
@@ -117,6 +118,7 @@ module.exports = {
         { expiresIn: "1h" }
       )
 
+      user.active = true
       user.logged_in_at = moment().format()
       await user.save()
   
