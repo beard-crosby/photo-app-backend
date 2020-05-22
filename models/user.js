@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
 	created_at: { type: String, default: moment().format() },
 	updated_at: { type: String, default: moment().format() },
 	settings: { type: Object, required: false },
+	favourites: [{ type: mongoose.Schema.ObjectId, ref: 'Post' }],
 })
 
 module.exports = mongoose.model('User', userSchema)

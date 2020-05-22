@@ -11,12 +11,13 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
       
-      user.settings = settings
+      user.settings = JSON.parse(settings)
       user.updated_at = moment().format()
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
+        settings: settings,
       }
     } catch (err) {
       throw err

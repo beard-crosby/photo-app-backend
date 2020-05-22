@@ -27,12 +27,12 @@ module.exports = {
           password: hashedPass,
           created_at: moment().format(),
           updated_at: moment().format(),
-          settings: JSON.stringify({ 
+          settings: { 
             dark_mode: false,
             own_posts: true,
             display_email: false,
             display_website: true,
-          }),
+          },
         },
         err => {
           if (err) throw new Error(err)
@@ -55,6 +55,7 @@ module.exports = {
         token_expiry: 1,
         password: null,
         ...user._doc,
+        settings: JSON.stringify(user._doc.settings)
       }
     } catch (err) {
       throw err
@@ -91,6 +92,14 @@ module.exports = {
             }
           }
         },
+        {
+          path: 'favourites',
+          model: 'Post',
+          populate: {
+            path: 'author',
+            model: 'User',
+          }
+        },
       ])
 
       if (!user) throw new Error("An Account by that Email was not found!")
@@ -116,6 +125,7 @@ module.exports = {
         token_expiry: 1,
         password: null,
         ...user._doc,
+        settings: JSON.stringify(user._doc.settings)
       }
     } catch (err) {
       throw err

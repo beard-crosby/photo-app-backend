@@ -15,6 +15,7 @@ module.exports = authSchema = `
     created_at: String
     updated_at: String
     settings: String
+    favourites: [Post]
   }
 
   input userInput {
