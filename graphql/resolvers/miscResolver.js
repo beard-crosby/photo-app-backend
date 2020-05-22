@@ -23,6 +23,25 @@ module.exports = {
       throw err
     }
   },
+  updateGeolocation: async ({ _id, geolocation }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      user.geolocation = geolocation
+      user.updated_at = moment().format()
+      await user.save()
+
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
   signS3: ({ filename, filetype }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
