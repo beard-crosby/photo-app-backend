@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 
 const userSchema = new mongoose.Schema({
-	active: { type: Boolean, required: true },
+	status: { type: String, default: "offline" },
 	name: { type: String, required: true },
 	email: { type: String, required: true },
 	website: { type: String, required: false },
@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
 	password: { type: String, required: true, min: 8 },
 	posts: [{ type: mongoose.Schema.ObjectId, ref: 'Post' }],
 	following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-	status: { type: String, default: 'active' },
 	logged_in_at: { type: String, default: null },
 	geolocation: { type: Object, default: null },
 	created_at: { type: String, default: moment().format() },

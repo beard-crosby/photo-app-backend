@@ -43,6 +43,21 @@ module.exports = {
       throw err
     }
   },
+  updateStatus: async ({ _id, status }) => {
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      user.status = status
+      await user.save()
+
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
   signS3: ({ filename, filetype }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
@@ -69,21 +84,6 @@ module.exports = {
       return {
         signedRequest,
         url,
-      }
-    } catch (err) {
-      throw err
-    }
-  },
-  notActive: async ({ _id }) => {
-    try {
-      const user = await User.findOne({ _id: _id })
-      if (!user) throw new Error("A User by that ID was not found!")
-
-      user.active = false
-      await user.save()
-
-      return {
-        ...user._doc
       }
     } catch (err) {
       throw err

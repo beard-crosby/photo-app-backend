@@ -18,7 +18,7 @@ module.exports = {
 
       const user = new User(
         {
-          active: true,
+          status: "online",
           name,
           email,
           website: "",
@@ -118,7 +118,7 @@ module.exports = {
         { expiresIn: "1h" }
       )
 
-      user.active = true
+      user.status = "online"
       user.logged_in_at = moment().format()
       await user.save()
   
@@ -166,7 +166,10 @@ module.exports = {
           }
         },
       ])
-      if (!users) throw new Error("There aren't any Users! Houston, we have a problem...")
+      if (!users) {
+        console.log("There aren't any Users! Houston, we have a problem...")
+        throw new Error("There aren't any Users! Houston, we have a problem...")
+      }
       return users.map(user => {
         return {
           ...user._doc

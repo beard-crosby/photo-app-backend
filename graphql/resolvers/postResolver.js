@@ -78,7 +78,10 @@ module.exports = {
           }
         },
       ])
-      if (!posts) throw new Error("There aren't any Posts! Houston, we have a problem...")
+      if (posts.length === 0) {
+        console.log("There aren't any Posts! Houston, we have a problem...")
+        throw new Error("There aren't any Posts! Houston, we have a problem...")
+      }
       return posts.map(post => {
         return post
       })

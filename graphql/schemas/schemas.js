@@ -32,7 +32,7 @@ module.exports = buildSchema(`
     updateGeolocation(_id: ID!, geolocation: String!): User
     updateBio(_id: ID!, bio: String!): User
     updatePP(_id: ID!, profile_picture: String!): User
-    notActive(_id: ID!): User
+    updateStatus(_id: ID!, status: String!): User
   }
 
   schema {
