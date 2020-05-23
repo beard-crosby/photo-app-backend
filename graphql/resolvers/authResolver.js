@@ -217,7 +217,8 @@ module.exports = {
       ])
       if (!user) throw new Error("A User by that ID was not found!")
       return {
-        ...user._doc
+        ...user._doc,
+        info: JSON.stringify(user._doc.info)
       }
     } catch (err) {
       throw err
