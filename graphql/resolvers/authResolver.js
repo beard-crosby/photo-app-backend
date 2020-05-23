@@ -22,7 +22,9 @@ module.exports = {
           name,
           email,
           website: "",
-          bio: "",
+          info: {
+            about: "",
+          },
           profile_picture: "",
           logged_in_at: moment().format(),
           password: hashedPass,
@@ -50,13 +52,14 @@ module.exports = {
         `${process.env.JWT_SECRET}`,
         { expiresIn: "1h" }
       )
-  
+      
       return {
+        ...user._doc,
         token,
         token_expiry: 1,
         password: null,
-        ...user._doc,
-        settings: JSON.stringify(user._doc.settings)
+        info: JSON.stringify(user._doc.info),
+        settings: JSON.stringify(user._doc.settings),
       }
     } catch (err) {
       throw err
@@ -123,10 +126,11 @@ module.exports = {
       await user.save()
   
       return {
+        ...user._doc,
         token,
         token_expiry: 1,
         password: null,
-        ...user._doc,
+        info: JSON.stringify(user._doc.info),
         geolocation: JSON.stringify(user._doc.geolocation),
         settings: JSON.stringify(user._doc.settings),
       }
@@ -235,7 +239,7 @@ module.exports = {
       throw err
     }
   },
-  updateBio: async ({ _id, bio }, req) => {
+  updateInfo: async ({ _id, info }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -243,12 +247,13 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      user.bio = bio
+      user.info = JSON.parse(info)
       user.updated_at = moment().format()
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
+        info: info
       }
     } catch (err) {
       throw err

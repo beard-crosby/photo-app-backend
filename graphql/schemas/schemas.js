@@ -30,7 +30,7 @@ module.exports = buildSchema(`
     deleteComment(_id: ID!): Comment
     updateSettings(_id: ID!, settings: String!): User
     updateGeolocation(_id: ID!, geolocation: String!): User
-    updateBio(_id: ID!, bio: String!): User
+    updateInfo(_id: ID!, info: String!): User
     updatePP(_id: ID!, profile_picture: String!): User
     updateStatus(_id: ID!, status: String!): User
   }
