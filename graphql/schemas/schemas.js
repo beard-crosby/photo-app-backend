@@ -33,6 +33,7 @@ module.exports = buildSchema(`
     updateInfo(_id: ID!, info: String!): User
     updatePP(_id: ID!, profile_picture: String!): User
     updateStatus(_id: ID!, status: String!): User
+    updateFavourites(_id: ID!, post: ID!, action: String!): User
   }
 
   schema {

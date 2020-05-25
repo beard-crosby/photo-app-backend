@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const moment = require("moment")
 
 const User = require("../../models/user")
+const Post = require("../../models/post")
 
 module.exports = {
   createUser: async args => {
@@ -124,7 +125,7 @@ module.exports = {
       user.status = "online"
       user.logged_in_at = moment().format()
       await user.save()
-  
+
       return {
         ...user._doc,
         token,
@@ -274,6 +275,49 @@ module.exports = {
 
       return {
         ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  updateFavourites: async ({ _id, post, action }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+      
+      const postTest = await Post.findOne({ _id: post })
+      if (!postTest) throw new Error("A Post by that ID was not found!")
+
+      if (action === "add") {
+        await user.favourites.forEach(fav => {
+          if (post.toString() === fav._id.toString()) {
+            throw new Error("Duplicate Favourite!")
+          }
+        })
+        await user.favourites.push(post)
+      } else {
+        await user.favourites.pull(post)
+      }
+
+      user.updated_at = moment().format()
+      await user.save()
+
+      const newUser = await User.findOne({ _id: _id }).populate([
+        {
+          path: 'favourites',
+          model: 'Post',
+          populate: {
+            path: 'author',
+            model: 'User',
+          }
+        },
+      ])
+
+      return {
+        ...newUser._doc
       }
     } catch (err) {
       throw err
