@@ -72,14 +72,20 @@ module.exports = {
         {
           path: 'posts',
           model: 'Post',
-          populate: {
-            path: 'comments',
-            model: 'Comment',
-            populate: {
+          populate: [
+            {
               path: 'author',
               model: 'User',
-            }
-          }
+            },
+            {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'author',
+                model: 'User',
+              },
+            },
+          ],
         },
         {
           path: 'following',
@@ -87,23 +93,39 @@ module.exports = {
           populate: {
             path: 'posts',
             model: 'Post',
-            populate: {
+            populate: [
+              {
+                path: 'author',
+                model: 'User',
+              },
+              {
+                path: 'comments',
+                model: 'Comment',
+                populate: {
+                  path: 'author',
+                  model: 'User',
+                },
+              },
+            ],
+          },
+        },
+        {
+          path: 'favourites',
+          model: 'Post',
+          populate: [
+            {
+              path: 'author',
+              model: 'User',
+            },
+            {
               path: 'comments',
               model: 'Comment',
               populate: {
                 path: 'author',
                 model: 'User',
-              }
-            }
-          }
-        },
-        {
-          path: 'favourites',
-          model: 'Post',
-          populate: {
-            path: 'author',
-            model: 'User',
-          }
+              },
+            },
+          ],
         },
       ])
 
