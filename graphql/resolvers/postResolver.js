@@ -64,20 +64,7 @@ module.exports = {
   },
   allPosts: async () => {
     try {
-      const posts = await Post.find().populate([
-        {
-          path: 'author',
-          model: 'User',
-        },
-        {
-          path: 'comments',
-          model: 'Comment',
-          populate: {
-            path: 'author',
-            model: 'User',
-          }
-        },
-      ])
+      const posts = await Post.find()
       if (posts.length === 0) {
         console.log("There aren't any Posts! Houston, we have a problem...")
         throw new Error("There aren't any Posts! Houston, we have a problem...")
