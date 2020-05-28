@@ -12,8 +12,6 @@ module.exports = buildSchema(`
 
   type rootQuery {
     user(_id: ID!): User!
-    allUsers: [User!]!
-    post(_id: ID, author: ID): Post!
     allPosts: [Post!]!
     comment(_id: ID, post: ID, author: ID): Comment!
     allComments: [Comment!]!

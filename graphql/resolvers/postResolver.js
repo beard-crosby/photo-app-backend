@@ -76,52 +76,6 @@ module.exports = {
       throw err
     }
   },
-  post: async ({ _id, author }, req) => {
-    if (!req.isAuth) {
-      throw new Error("Not Authenticated!")
-    }
-    try {
-      let post = null
-      if (_id) {
-        post = await Post.findOne({ _id: _id }).populate([
-          {
-            path: 'author',
-            model: 'User',
-          },
-          {
-            path: 'comments',
-            model: 'Comment',
-            populate: {
-              path: 'author',
-              model: 'User',
-            }
-          },
-        ])
-        if (!post) throw new Error("A Post by that ID was not found!")
-      } else {
-        post = await Post.findOne({ author: author }).populate([
-          {
-            path: 'author',
-            model: 'User',
-          },
-          {
-            path: 'comments',
-            model: 'Comment',
-            populate: {
-              path: 'author',
-              model: 'User',
-            }
-          },
-        ])
-        if (!post) throw new Error("A Post by that Author ID was not found!")
-      }
-      return {
-        ...post._doc
-      }
-    } catch (err) {
-      throw err
-    }
-  },
   deletePost: async ({ _id }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")

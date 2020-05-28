@@ -5,6 +5,8 @@ const moment = require("moment")
 const User = require("../../models/user")
 const Post = require("../../models/post")
 
+const { checkAuthorSettings, checkFollowingAuthorSettings } = require('../../shared/utility')
+
 module.exports = {
   createUser: async args => {
     try {
@@ -152,56 +154,16 @@ module.exports = {
         ...user._doc,
         token,
         token_expiry: 1,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
         password: null,
+        posts: await checkAuthorSettings(user.posts),
+        following: await checkFollowingAuthorSettings(user.following),
+        favourites: await checkAuthorSettings(user.favourites),
         info: JSON.stringify(user._doc.info),
         geolocation: JSON.stringify(user._doc.geolocation),
         settings: JSON.stringify(user._doc.settings),
       }
-    } catch (err) {
-      throw err
-    }
-  },
-  allUsers: async () => {
-    try {
-      const users = await User.find().populate([
-        {
-          path: 'posts',
-          model: 'Post',
-          populate: {
-            path: 'comments',
-            model: 'Comment',
-            populate: {
-              path: 'author',
-              model: 'User',
-            }
-          }
-        },
-        {
-          path: 'following',
-          model: 'User',
-          populate: {
-            path: 'posts',
-            model: 'Post',
-            populate: {
-              path: 'comments',
-              model: 'Comment',
-              populate: {
-                path: 'author',
-                model: 'User',
-              }
-            }
-          }
-        },
-      ])
-      if (!users) {
-        console.log("There aren't any Users! Houston, we have a problem...")
-        throw new Error("There aren't any Users! Houston, we have a problem...")
-      }
-      return users.map(user => {
-        return {
-          ...user._doc
-        }
-      })
     } catch (err) {
       throw err
     }
@@ -212,14 +174,20 @@ module.exports = {
         {
           path: 'posts',
           model: 'Post',
-          populate: {
-            path: 'comments',
-            model: 'Comment',
-            populate: {
+          populate: [
+            {
               path: 'author',
               model: 'User',
-            }
-          }
+            },
+            {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'author',
+                model: 'User',
+              },
+            },
+          ],
         },
         {
           path: 'following',
@@ -227,21 +195,48 @@ module.exports = {
           populate: {
             path: 'posts',
             model: 'Post',
-            populate: {
+            populate: [
+              {
+                path: 'author',
+                model: 'User',
+              },
+              {
+                path: 'comments',
+                model: 'Comment',
+                populate: {
+                  path: 'author',
+                  model: 'User',
+                },
+              },
+            ],
+          },
+        },
+        {
+          path: 'favourites',
+          model: 'Post',
+          populate: [
+            {
+              path: 'author',
+              model: 'User',
+            },
+            {
               path: 'comments',
               model: 'Comment',
               populate: {
                 path: 'author',
                 model: 'User',
-              }
-            }
-          }
+              },
+            },
+          ],
         },
       ])
       if (!user) throw new Error("A User by that ID was not found!")
       return {
         ...user._doc,
-        info: JSON.stringify(user._doc.info)
+        info: JSON.stringify(user._doc.info),
+        posts: await checkAuthorSettings(user.posts),
+        following: await checkFollowingAuthorSettings(user.following),
+        favourites: await checkAuthorSettings(user.favourites),
       }
     } catch (err) {
       throw err
@@ -339,7 +334,8 @@ module.exports = {
       ])
 
       return {
-        ...newUser._doc
+        ...newUser._doc,
+        favourites: await checkAuthorSettings(user.favourites),
       }
     } catch (err) {
       throw err
