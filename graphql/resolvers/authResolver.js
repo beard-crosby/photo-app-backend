@@ -337,7 +337,7 @@ module.exports = {
 
       return {
         ...newUser._doc,
-        favourites: await checkAuthorSettings(user.favourites),
+        favourites: await checkAuthorSettings(newUser.favourites),
       }
     } catch (err) {
       throw err
