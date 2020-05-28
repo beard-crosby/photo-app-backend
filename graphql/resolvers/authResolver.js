@@ -60,6 +60,8 @@ module.exports = {
         ...user._doc,
         token,
         token_expiry: 1,
+        email: "",
+        website: "",
         password: null,
         info: JSON.stringify(user._doc.info),
         settings: JSON.stringify(user._doc.settings),
