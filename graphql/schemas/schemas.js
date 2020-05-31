@@ -15,11 +15,10 @@ module.exports = buildSchema(`
     allPosts: [Post!]!
     comment(_id: ID, post: ID, author: ID): Comment!
     allComments: [Comment!]!
-    login(email: String, username: String, password: String!): User!
+    login(email: String!, password: String, oAuthToken: String): User!
   }
 
   type rootMutation {
-    signS3(filename: String!, filetype: String!): S3Payload!
     createUser(userInput: userInput): User
     deleteUser(_id: ID!): User
     createPost(postInput: postInput): Post
@@ -32,6 +31,7 @@ module.exports = buildSchema(`
     updatePP(_id: ID!, profile_picture: String!): User
     updateStatus(_id: ID!, status: String!): User
     updateFavourites(_id: ID!, post: ID!, action: String!): User
+    signS3(filename: String!, filetype: String!): S3Payload!
   }
 
   schema {

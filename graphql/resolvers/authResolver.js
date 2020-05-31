@@ -5,19 +5,32 @@ const moment = require("moment")
 const User = require("../../models/user")
 const Post = require("../../models/post")
 
-const { checkAuthorSettings, checkFollowingAuthorSettings } = require('../../shared/utility')
+const { checkAuthorSettings, checkFollowingAuthorSettings, checkoAuthTokenValidity } = require('../../shared/utility')
 
 module.exports = {
   createUser: async args => {
     try {
-      const { name, email, password, pass_confirm } = args.userInput
-  
-      const testEmail = await User.findOne({ email })
+      const { name, email, password, pass_confirm, profile_picture, oAuthToken } = args.userInput
+      const testUser = await User.findOne({ email })
 
-      if (testEmail) throw new Error("An Account by that Email already exists!")
-      if (password !== pass_confirm) throw new Error("Passwords do not match.")
-  
-      const hashedPass = await bcrypt.hash(password, 12)
+      if (oAuthToken) {
+        await checkoAuthTokenValidity(oAuthToken)
+      }
+
+      if (testUser) {
+        if (testUser.password) {
+          throw new Error("An account by that email already exists! Please try and login.")
+        } else if (!testUser.password && oAuthToken) {
+          throw new Error("oAuth Login")
+        } else {
+          throw new Error("A Google or Facebook account by that email already exists! Please try and login.")
+        }
+      }
+
+      if (password) {
+        if (password !== pass_confirm) throw new Error("Passwords do not match.")
+        var hashedPass = await bcrypt.hash(password, 12)
+      }
 
       const user = new User(
         {
@@ -28,7 +41,7 @@ module.exports = {
           info: {
             about: "",
           },
-          profile_picture: "",
+          profile_picture: profile_picture ? profile_picture : "",
           logged_in_at: moment().format(),
           password: hashedPass,
           created_at: moment().format(),
@@ -70,7 +83,7 @@ module.exports = {
       throw err
     }
   },
-  login: async ({ email, password }) => {
+  login: async ({ email, password, oAuthToken }) => {
     try {
       const user = await User.findOne({ email }).populate([
         {
@@ -134,11 +147,23 @@ module.exports = {
       ])
 
       if (!user) throw new Error("An Account by that Email was not found!")
-      if (!password) throw new Error("Please enter your password")
-      
-      const passIsValid = bcrypt.compareSync( password, user.password )
-      if (!passIsValid) throw new Error("Incorrect Password")
-  
+
+      if (oAuthToken) {
+        await checkoAuthTokenValidity(oAuthToken)
+      }
+
+      if (user.password) {
+        if (oAuthToken) throw new Error("The account for this email wasn't created with Google or Facebook.")
+        if (!password) throw new Error("Please enter your password.")
+        if (!bcrypt.compareSync(password, user.password)) throw new Error("Incorrect Password.")
+      } else {
+        if (!oAuthToken) throw new Error("The account for this email is a Google or Facebook account.")
+      }
+
+      user.status = "online"
+      user.logged_in_at = moment().format()
+      await user.save()
+
       const token = jwt.sign(
         { 
           _id: user._id, 
@@ -148,23 +173,19 @@ module.exports = {
         { expiresIn: "1h" }
       )
 
-      user.status = "online"
-      user.logged_in_at = moment().format()
-      await user.save()
-
       return {
         ...user._doc,
         token,
         token_expiry: 1,
         email: user.settings.display_email ? user.email : "",
         website: user.settings.display_website ? user.website : "",
-        password: null,
         posts: await checkAuthorSettings(user.posts),
         following: await checkFollowingAuthorSettings(user.following),
         favourites: await checkAuthorSettings(user.favourites),
         info: JSON.stringify(user._doc.info),
         geolocation: JSON.stringify(user._doc.geolocation),
         settings: JSON.stringify(user._doc.settings),
+        password: null,
       }
     } catch (err) {
       throw err

@@ -22,7 +22,9 @@ module.exports = authSchema = `
   input userInput {
     name: String!
     email: String!
-    password: String!
-    pass_confirm: String!
+    password: String
+    pass_confirm: String
+    profile_picture: String
+    oAuthToken: String
   }
 `

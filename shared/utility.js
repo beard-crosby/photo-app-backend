@@ -1,3 +1,5 @@
+const { OAuth2Client } = require('google-auth-library')
+
 const checkAuthorSettings = array => {
   return array.map(post => {
     return {
@@ -20,5 +22,15 @@ const checkFollowingAuthorSettings = array => {
   })
 }
 
+const checkoAuthTokenValidity = async oAuthToken => {
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+  const ticket = await client.verifyIdToken({
+    idToken: oAuthToken,
+    audience: process.env.GOOGLE_CLIENT_ID
+  })
+  return ticket.getPayload()
+}
+
 exports.checkAuthorSettings = checkAuthorSettings
 exports.checkFollowingAuthorSettings = checkFollowingAuthorSettings
+exports.checkoAuthTokenValidity = checkoAuthTokenValidity
