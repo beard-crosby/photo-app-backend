@@ -23,7 +23,7 @@ module.exports = {
         } else if (!testUser.password && oAuthToken) {
           throw new Error("oAuth Login")
         } else {
-          throw new Error("A Google or Facebook account by that email already exists! Please try and login.")
+          throw new Error("A Google account by that email already exists! Please try and login.")
         }
       }
 
@@ -153,11 +153,11 @@ module.exports = {
       }
 
       if (user.password) {
-        if (oAuthToken) throw new Error("The account for this email wasn't created with Google or Facebook.")
+        if (oAuthToken) throw new Error("The account for this email wasn't created with Google.")
         if (!password) throw new Error("Please enter your password.")
         if (!bcrypt.compareSync(password, user.password)) throw new Error("Incorrect Password.")
       } else {
-        if (!oAuthToken) throw new Error("The account for this email is a Google or Facebook account.")
+        if (!oAuthToken) throw new Error("The account for this email is a Google account.")
       }
 
       user.status = "online"
