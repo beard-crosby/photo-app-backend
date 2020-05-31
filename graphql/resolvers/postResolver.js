@@ -55,7 +55,12 @@ module.exports = {
       ])
 
       return {
-        ...findPost._doc
+        ...findPost._doc,
+        author: {
+          ...findPost._doc.author._doc,
+          email: findPost.author.settings.display_email ? findPost.author.email : "",
+          website: findPost.author.settings.display_website ? findPost.author.website : "",
+        }
       }
 
     } catch (err) {
@@ -65,10 +70,12 @@ module.exports = {
   allPosts: async () => {
     try {
       const posts = await Post.find()
+
       if (posts.length === 0) {
         console.log("There aren't any Posts! Houston, we have a problem...")
         throw new Error("There aren't any Posts! Houston, we have a problem...")
       }
+
       return posts.map(post => {
         return post
       })
