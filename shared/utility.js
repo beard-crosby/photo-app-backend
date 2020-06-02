@@ -31,6 +31,68 @@ const checkoAuthTokenValidity = async oAuthToken => {
   return ticket.getPayload()
 }
 
+const userPopulationObj = [
+  {
+    path: 'posts',
+    model: 'Post',
+    populate: [
+      {
+        path: 'author',
+        model: 'User',
+      },
+      {
+        path: 'comments',
+        model: 'Comment',
+        populate: {
+          path: 'author',
+          model: 'User',
+        },
+      },
+    ],
+  },
+  {
+    path: 'following',
+    model: 'User',
+    populate: {
+      path: 'posts',
+      model: 'Post',
+      populate: [
+        {
+          path: 'author',
+          model: 'User',
+        },
+        {
+          path: 'comments',
+          model: 'Comment',
+          populate: {
+            path: 'author',
+            model: 'User',
+          },
+        },
+      ],
+    },
+  },
+  {
+    path: 'favourites',
+    model: 'Post',
+    populate: [
+      {
+        path: 'author',
+        model: 'User',
+      },
+      {
+        path: 'comments',
+        model: 'Comment',
+        populate: {
+          path: 'author',
+          model: 'User',
+        },
+      },
+    ],
+  },
+]
+
 exports.checkAuthorSettings = checkAuthorSettings
 exports.checkFollowingAuthorSettings = checkFollowingAuthorSettings
 exports.checkoAuthTokenValidity = checkoAuthTokenValidity
+exports.userPopulationObj = userPopulationObj

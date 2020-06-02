@@ -5,7 +5,7 @@ const moment = require("moment")
 const User = require("../../models/user")
 const Post = require("../../models/post")
 
-const { checkAuthorSettings, checkFollowingAuthorSettings, checkoAuthTokenValidity } = require('../../shared/utility')
+const { checkAuthorSettings, checkFollowingAuthorSettings, checkoAuthTokenValidity, userPopulationObj } = require('../../shared/utility')
 
 module.exports = {
   createUser: async args => {
@@ -85,66 +85,7 @@ module.exports = {
   },
   login: async ({ email, password, oAuthToken }) => {
     try {
-      const user = await User.findOne({ email }).populate([
-        {
-          path: 'posts',
-          model: 'Post',
-          populate: [
-            {
-              path: 'author',
-              model: 'User',
-            },
-            {
-              path: 'comments',
-              model: 'Comment',
-              populate: {
-                path: 'author',
-                model: 'User',
-              },
-            },
-          ],
-        },
-        {
-          path: 'following',
-          model: 'User',
-          populate: {
-            path: 'posts',
-            model: 'Post',
-            populate: [
-              {
-                path: 'author',
-                model: 'User',
-              },
-              {
-                path: 'comments',
-                model: 'Comment',
-                populate: {
-                  path: 'author',
-                  model: 'User',
-                },
-              },
-            ],
-          },
-        },
-        {
-          path: 'favourites',
-          model: 'Post',
-          populate: [
-            {
-              path: 'author',
-              model: 'User',
-            },
-            {
-              path: 'comments',
-              model: 'Comment',
-              populate: {
-                path: 'author',
-                model: 'User',
-              },
-            },
-          ],
-        },
-      ])
+      const user = await User.findOne({ email }).populate(userPopulationObj)
 
       if (!user) throw new Error("An Account by that Email was not found!")
 
@@ -193,67 +134,9 @@ module.exports = {
   },
   user: async ({ _id }) => {
     try {
-      const user = await User.findOne({ _id }).populate([
-        {
-          path: 'posts',
-          model: 'Post',
-          populate: [
-            {
-              path: 'author',
-              model: 'User',
-            },
-            {
-              path: 'comments',
-              model: 'Comment',
-              populate: {
-                path: 'author',
-                model: 'User',
-              },
-            },
-          ],
-        },
-        {
-          path: 'following',
-          model: 'User',
-          populate: {
-            path: 'posts',
-            model: 'Post',
-            populate: [
-              {
-                path: 'author',
-                model: 'User',
-              },
-              {
-                path: 'comments',
-                model: 'Comment',
-                populate: {
-                  path: 'author',
-                  model: 'User',
-                },
-              },
-            ],
-          },
-        },
-        {
-          path: 'favourites',
-          model: 'Post',
-          populate: [
-            {
-              path: 'author',
-              model: 'User',
-            },
-            {
-              path: 'comments',
-              model: 'Comment',
-              populate: {
-                path: 'author',
-                model: 'User',
-              },
-            },
-          ],
-        },
-      ])
+      const user = await User.findOne({ _id }).populate(userPopulationObj)
       if (!user) throw new Error("A User by that ID was not found!")
+      
       return {
         ...user._doc,
         info: JSON.stringify(user._doc.info),
