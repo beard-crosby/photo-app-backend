@@ -98,5 +98,44 @@ module.exports = {
     } catch (err) {
       throw err
     }
-  }
+  },
+  updateTitle: async ({ _id, title }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    console.log(_id, title)
+    try {
+      const post = await Post.findOne({ _id: _id })
+      if (!post) throw new Error("A Post by that ID was not found!")
+
+      post.title = title
+      post.updated_at = moment().format()
+      await post.save()
+
+      return {
+        ...post._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  updateDescription: async ({ _id, description }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const post = await Post.findOne({ _id: _id })
+      if (!post) throw new Error("A Post by that ID was not found!")
+
+      post.description = description
+      post.updated_at = moment().format()
+      await post.save()
+
+      return {
+        ...post._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }

@@ -31,6 +31,8 @@ module.exports = buildSchema(`
     updatePP(_id: ID!, profile_picture: String!): User
     updateStatus(_id: ID!, status: String!): User
     updateFavourites(_id: ID!, post: ID!, action: String!): User
+    updateTitle(_id: ID!, title: String!): Post
+    updateDescription(_id: ID!, description: String!): Post
     signS3(filename: String!, filetype: String!): S3Payload!
   }
 
