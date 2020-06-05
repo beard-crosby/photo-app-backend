@@ -103,7 +103,6 @@ module.exports = {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
-    console.log(_id, title)
     try {
       const post = await Post.findOne({ _id: _id })
       if (!post) throw new Error("A Post by that ID was not found!")
