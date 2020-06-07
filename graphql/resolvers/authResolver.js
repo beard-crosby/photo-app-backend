@@ -4,6 +4,7 @@ const moment = require("moment")
 
 const User = require("../../models/user")
 const Post = require("../../models/post")
+const Comment = require("../../models/comment")
 
 const { checkAuthorSettings, checkFollowingAuthorSettings, checkoAuthTokenValidity, userPopulationObj } = require('../../shared/utility')
 
@@ -136,7 +137,7 @@ module.exports = {
     try {
       const user = await User.findOne({ _id }).populate(userPopulationObj)
       if (!user) throw new Error("A User by that ID was not found!")
-      
+
       return {
         ...user._doc,
         info: JSON.stringify(user._doc.info),
@@ -153,10 +154,27 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: _id }).populate([
+        {
+          path: 'posts',
+          model: 'Post',
+          populate: {
+            path: 'comments',
+            model: 'Comment',
+          },
+        },
+      ])
       if (!user) throw new Error("A User by that ID was not found!")
 
+      await user.posts.forEach(async post => {
+        await post.comments.forEach(async comment => {
+          await Comment.deleteOne({ _id: comment._id })
+        })
+        await Post.deleteOne({ _id: post._id })
+      })
+
       await User.deleteOne({ _id: _id })
+
       return {
         ...user._doc
       }
