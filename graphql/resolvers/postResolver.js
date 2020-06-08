@@ -15,6 +15,9 @@ module.exports = {
 
       const testPost = await Post.findOne({ 'author': author, 'title': title, 'description': description })
       if (testPost) throw new Error("Duplicate Post!")
+
+      if (title.length > 60) throw new Error("Title must be a maximum of 60 characters.")
+      if (description.length > 300) throw new Error("Description must be a maximum of 300 characters.")
       
       const post = new Post(
         {
@@ -107,6 +110,8 @@ module.exports = {
       const post = await Post.findOne({ _id: _id })
       if (!post) throw new Error("A Post by that ID was not found!")
 
+      if (title.length > 60) throw new Error("Title must be a maximum of 60 characters.")
+
       post.title = title
       post.updated_at = moment().format()
       await post.save()
@@ -125,6 +130,8 @@ module.exports = {
     try {
       const post = await Post.findOne({ _id: _id })
       if (!post) throw new Error("A Post by that ID was not found!")
+
+      if (description.length > 300) throw new Error("Description must be a maximum of 300 characters.")
 
       post.description = description
       post.updated_at = moment().format()
