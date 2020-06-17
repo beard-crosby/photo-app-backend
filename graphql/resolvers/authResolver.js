@@ -232,6 +232,8 @@ module.exports = {
       const postTest = await Post.findOne({ _id: post })
       if (!postTest) throw new Error("A Post by that ID was not found!")
 
+      if (user._id.toString() === postTest.author) throw new Error("You can't favourite your own post!")
+
       if (action === "add") {
         await user.favourites.forEach(fav => {
           if (post.toString() === fav._id.toString()) {
