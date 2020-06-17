@@ -248,20 +248,8 @@ module.exports = {
       user.updated_at = moment().format()
       await user.save()
 
-      const newUser = await User.findOne({ _id: _id }).populate([
-        {
-          path: 'favourites',
-          model: 'Post',
-          populate: {
-            path: 'author',
-            model: 'User',
-          }
-        },
-      ])
-
       return {
-        ...newUser._doc,
-        favourites: await checkAuthorSettings(newUser.favourites),
+        ...user._doc
       }
     } catch (err) {
       throw err
