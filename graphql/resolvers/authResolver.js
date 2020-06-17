@@ -240,9 +240,9 @@ module.exports = {
             throw new Error("Duplicate Favourite!")
           }
         })
-        await user.favourites.push(post)
+        await user.favourites.unshift(post)
       } else {
-        await user.favourites.pull(post)
+        user.favourites = await user.favourites.filter(x => x._id.toString() !== post)
       }
 
       user.updated_at = moment().format()
