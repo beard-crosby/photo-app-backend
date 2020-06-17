@@ -1,5 +1,6 @@
 const Post = require('../../models/post')
 const Comment = require('../../models/comment')
+const moment = require("moment")
 
 module.exports = {
   createComment: async ({ post, comment, author }, req) => {
@@ -26,27 +27,12 @@ module.exports = {
         }
       )
       
-      comment_id = null
-      await newComment.save(function(err, comment) {
-        if (err) throw new Error(err)
-        comment_id = comment._id
-      })
-      await tempPost.comments.push(newComment)
+      await newComment.save()
+      await tempPost.comments.unshift(newComment)
       await tempPost.save()
 
-      const findComment = await Comment.findOne({ _id: comment_id }).populate([
-        {
-          path: 'post',
-          model: 'Post',
-        },
-        {
-          path: 'author',
-          model: 'User',
-        },
-      ])
-
       return {
-        ...findComment._doc
+        ...newComment._doc
       }
 
     } catch (err) {
