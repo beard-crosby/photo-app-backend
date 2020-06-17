@@ -11,6 +11,8 @@ module.exports = {
       const tempPost = await Post.findOne({ _id: post })
       if (!tempPost) throw new Error("A Post by that ID was not found!")
 
+      if (tempPost.author === author) throw new Error("You can't comment on your own post!")
+
       const testComment = await Comment.findOne({ post: post, comment: comment, author: author })
       if (testComment) throw new Error("Duplicate Comment!")
 
