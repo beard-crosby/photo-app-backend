@@ -2,6 +2,14 @@ const User = require('../../models/user')
 const Post = require('../../models/post')
 const Comment = require('../../models/comment')
 const moment = require("moment")
+const aws = require("aws-sdk")
+
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  signatureVersion: 'v4',
+  region: 'eu-west-2',
+})
 
 module.exports = {
   createPost: async (args, req) => {
@@ -105,8 +113,15 @@ module.exports = {
       await post.comments.forEach(async comment => {
         await Comment.deleteOne({ _id: comment._id })
       })
-
+      
       await Post.deleteOne({ _id: _id })
+
+      await s3.deleteObject({
+        Bucket: process.env.AWS_BUCKET,
+        Key: post.img.substring(post.img.indexOf("amazonaws.com/") + 14),
+      }, err => {
+        if (err) throw err  // error
+      }).promise()
 
       return {
         ...post._doc
