@@ -1,5 +1,6 @@
 const User = require('../../models/user')
 const Post = require('../../models/post')
+const Comment = require('../../models/comment')
 const moment = require("moment")
 
 module.exports = {
@@ -92,10 +93,21 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const post = await Post.findOne({ _id: _id })
+      const post = await Post.findOne({ _id: _id }).populate([
+        {
+          path: 'comments',
+          model: 'Comment',
+        },
+      ])
+
       if (!post) throw new Error("A Post by that ID was not found!")
 
+      await post.comments.forEach(async comment => {
+        await Comment.deleteOne({ _id: comment._id })
+      })
+
       await Post.deleteOne({ _id: _id })
+
       return {
         ...post._doc
       }
