@@ -1,4 +1,12 @@
 const { OAuth2Client } = require('google-auth-library')
+const aws = require("aws-sdk")
+
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  signatureVersion: 'v4',
+  region: 'eu-west-2',
+})
 
 const checkAuthorSettings = array => {
   return array.map(post => {
@@ -92,7 +100,32 @@ const userPopulationObj = [
   },
 ]
 
+const emptyS3Directory = async (bucket, dir) => {
+  const listParams = {
+    Bucket: bucket,
+    Prefix: dir
+  };
+
+  const listedObjects = await s3.listObjectsV2(listParams).promise()
+
+  if (listedObjects.Contents.length === 0) return
+
+  const deleteParams = {
+    Bucket: bucket,
+    Delete: { Objects: [] }
+  }
+
+  listedObjects.Contents.forEach(({ Key }) => {
+    deleteParams.Delete.Objects.push({ Key })
+  })
+
+  await s3.deleteObjects(deleteParams).promise()
+
+  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir)
+}
+
 exports.checkAuthorSettings = checkAuthorSettings
 exports.checkFollowingAuthorSettings = checkFollowingAuthorSettings
 exports.checkoAuthTokenValidity = checkoAuthTokenValidity
 exports.userPopulationObj = userPopulationObj
+exports.emptyS3Directory = emptyS3Directory

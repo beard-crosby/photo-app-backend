@@ -6,7 +6,21 @@ const User = require("../../models/user")
 const Post = require("../../models/post")
 const Comment = require("../../models/comment")
 
-const { checkAuthorSettings, checkFollowingAuthorSettings, checkoAuthTokenValidity, userPopulationObj } = require('../../shared/utility')
+const aws = require("aws-sdk")
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  signatureVersion: 'v4',
+  region: 'eu-west-2',
+})
+
+const { 
+  checkAuthorSettings, 
+  checkFollowingAuthorSettings, 
+  checkoAuthTokenValidity, 
+  userPopulationObj,
+  emptyS3Directory,
+ } = require('../../shared/utility')
 
 module.exports = {
   createUser: async args => {
@@ -174,6 +188,8 @@ module.exports = {
       })
 
       await User.deleteOne({ _id: _id })
+
+      await emptyS3Directory(process.env.AWS_BUCKET, `${_id}/`)
 
       return {
         ...user._doc
