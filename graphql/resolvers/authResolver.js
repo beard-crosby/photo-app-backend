@@ -226,7 +226,12 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      if (old_PP) {
+      const ppFilename = profile_picture ? profile_picture.substring(profile_picture.lastIndexOf("/") + 1) : null
+      const old_PPFilename = old_PP ? old_PP.substring(old_PP.lastIndexOf("/") + 1) : null
+
+      if (ppFilename === old_PPFilename) throw new Error("Duplicate Profile Picture!")
+
+      if (old_PP && ppFilename !== old_PPFilename) {
         await s3.deleteObject({
           Bucket: process.env.AWS_BUCKET,
           Key: old_PP.substring(old_PP.indexOf("amazonaws.com/") + 14),
