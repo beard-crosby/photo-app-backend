@@ -28,12 +28,13 @@ module.exports = buildSchema(`
     updateSettings(_id: ID!, settings: String!): User
     updateGeolocation(_id: ID!, geolocation: String!): User
     updateInfo(_id: ID!, info: String!): User
-    updatePP(_id: ID!, profile_picture: String!): User
+    updatePP(_id: ID!, profile_picture: String!, old_PP: String!): User
     updateStatus(_id: ID!, status: String!): User
     updateFavourites(_id: ID!, post: ID!, action: String!): User
     updateTitle(_id: ID!, title: String!): Post
     updateDescription(_id: ID!, description: String!): Post
     signS3(filename: String!, filetype: String!): S3Payload!
+    deleteS3(filename: String!): S3Deleted!
   }
 
   schema {

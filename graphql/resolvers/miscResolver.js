@@ -2,6 +2,13 @@ const User = require("../../models/user")
 const moment = require("moment")
 const aws = require("aws-sdk")
 
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  signatureVersion: 'v4',
+  region: 'eu-west-2',
+})
+
 module.exports = {
   updateSettings: async ({ _id, settings }, req) => {
     if (!req.isAuth) {
@@ -63,13 +70,6 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const s3 = new aws.S3({
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        signatureVersion: 'v4',
-        region: 'eu-west-2',
-      })
-
       const s3Params = {
         Bucket: process.env.AWS_BUCKET,
         Key: filename,
@@ -84,6 +84,25 @@ module.exports = {
       return {
         signedRequest,
         url,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  deleteS3: async ({ filename }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      await s3.deleteObject({
+        Bucket: process.env.AWS_BUCKET,
+        Key: filename.substring(filename.indexOf("amazonaws.com/") + 14),
+      }, err => {
+        if (err) throw err  // error
+      }).promise()
+
+      return {
+        filename
       }
     } catch (err) {
       throw err

@@ -218,13 +218,22 @@ module.exports = {
       throw err
     }
   },
-  updatePP: async ({ _id, profile_picture }, req) => {
+  updatePP: async ({ _id, profile_picture, old_PP }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
+
+      if (old_PP) {
+        await s3.deleteObject({
+          Bucket: process.env.AWS_BUCKET,
+          Key: old_PP.substring(old_PP.indexOf("amazonaws.com/") + 14),
+        }, err => {
+          if (err) throw err
+        }).promise()
+      }
 
       user.profile_picture = profile_picture
       user.updated_at = moment().format()
