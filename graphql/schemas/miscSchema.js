@@ -3,8 +3,4 @@ module.exports = miscSchema = `
     signedRequest: String!,
     url: String!,
   }
-
-  type S3Deleted {
-    filename: String!
-  }
 `

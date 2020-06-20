@@ -6,20 +6,13 @@ const User = require("../../models/user")
 const Post = require("../../models/post")
 const Comment = require("../../models/comment")
 
-const aws = require("aws-sdk")
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  signatureVersion: 'v4',
-  region: 'eu-west-2',
-})
-
 const { 
   checkAuthorSettings, 
   checkFollowingAuthorSettings, 
   checkoAuthTokenValidity, 
   userPopulationObj,
   emptyS3Directory,
+  redundantFilesCheck,
  } = require('../../shared/utility')
 
 module.exports = {
@@ -218,7 +211,7 @@ module.exports = {
       throw err
     }
   },
-  updatePP: async ({ _id, profile_picture, old_PP }, req) => {
+  updatePP: async ({ _id, profile_picture }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -226,19 +219,10 @@ module.exports = {
       const user = await User.findOne({ _id: _id })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      const ppFilename = profile_picture ? profile_picture.substring(profile_picture.lastIndexOf("/") + 1) : null
-      const old_PPFilename = old_PP ? old_PP.substring(old_PP.lastIndexOf("/") + 1) : null
+      const newPP = profile_picture.substring(profile_picture.lastIndexOf("/") + 1)
+      const oldPP = user.profile_picture.substring(user.profile_picture.lastIndexOf("/") + 1)
 
-      if (ppFilename === old_PPFilename) throw new Error("Duplicate Profile Picture!")
-
-      if (old_PP && ppFilename !== old_PPFilename) {
-        await s3.deleteObject({
-          Bucket: process.env.AWS_BUCKET,
-          Key: old_PP.substring(old_PP.indexOf("amazonaws.com/") + 14),
-        }, err => {
-          if (err) throw err
-        }).promise()
-      }
+      if (oldPP === newPP) throw new Error("Duplicate Profile Picture!")
 
       user.profile_picture = profile_picture
       user.updated_at = moment().format()

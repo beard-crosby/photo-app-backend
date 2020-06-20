@@ -2,6 +2,8 @@ const User = require("../../models/user")
 const moment = require("moment")
 const aws = require("aws-sdk")
 
+const { redundantFilesCheck } = require("../../shared/utility")
+
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -65,11 +67,16 @@ module.exports = {
       throw err
     }
   },
-  signS3: ({ filename, filetype }, req) => {
+  signS3: async ({ filename, filetype }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
+      const _id = await filename.substring(0, filename.indexOf("/"))
+
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
       const s3Params = {
         Bucket: process.env.AWS_BUCKET,
         Key: filename,
@@ -89,20 +96,18 @@ module.exports = {
       throw err
     }
   },
-  deleteS3: async ({ filename }, req) => {
+  redundantFilesCheck: async ({ _id }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      await s3.deleteObject({
-        Bucket: process.env.AWS_BUCKET,
-        Key: filename.substring(filename.indexOf("amazonaws.com/") + 14),
-      }, err => {
-        if (err) throw err
-      }).promise()
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      redundantFilesCheck(_id)
 
       return {
-        filename
+        ...user._doc
       }
     } catch (err) {
       throw err
