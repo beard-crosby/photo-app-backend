@@ -98,7 +98,7 @@ module.exports = {
         Bucket: process.env.AWS_BUCKET,
         Key: filename.substring(filename.indexOf("amazonaws.com/") + 14),
       }, err => {
-        if (err) throw err  // error
+        if (err) throw err
       }).promise()
 
       return {

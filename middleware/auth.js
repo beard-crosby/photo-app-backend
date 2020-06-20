@@ -31,6 +31,5 @@ module.exports = function (req, res, next) {
     req.isAuth = true
     req._id = decodedToken._id
     req.email = decodedToken.email
-    req.username = decodedToken.username
     next()
 }
