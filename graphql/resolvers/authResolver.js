@@ -269,4 +269,54 @@ module.exports = {
       throw err
     }
   },
+  updateBasic: async ({ _id, name, email, website }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findOne({ _id: _id })
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      if (!name && !email && !website) throw new Error("No Name, Email or Website was passed!")
+      
+      if (name) {
+        if (name === "delete") {
+          throw new Error("You cannot delete your name! Feel free to use a fake name!")
+        } else if (!/^[a-zA-Z\s-']{6,30}$/.test(name)) {
+          throw new Error("Your Name must only have letters, spaces, -' characters and be 6-15 characters in length.")
+        } else {
+          user.name = name
+        }
+      } 
+      
+      if (email) {
+        if (email === "delete") {
+          user.email = ""
+        } else if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email)) {
+          throw new Error("Please enter a valid email address.")
+        } else {
+          user.email = email
+        }
+      } 
+      
+      if (website) {
+        if (website === "delete") {
+          user.website = ""
+        } else if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(website)) {
+          throw new Error("Please enter a valid URL")
+        } else {
+          user.website = website
+        }
+      }
+
+      user.updated_at = moment().format()
+      await user.save()
+
+      return {
+        ...user._doc
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }
