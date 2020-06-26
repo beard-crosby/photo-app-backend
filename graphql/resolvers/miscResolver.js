@@ -26,6 +26,7 @@ module.exports = {
 
       return {
         ...user._doc,
+        tokens: req.tokens,
         settings: settings,
       }
     } catch (err) {
@@ -46,7 +47,8 @@ module.exports = {
 
       return {
         ...user._doc,
-        geolocation: geolocation
+        tokens: req.tokens,
+        geolocation: geolocation,
       }
     } catch (err) {
       throw err
@@ -61,7 +63,7 @@ module.exports = {
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
       }
     } catch (err) {
       throw err
@@ -89,6 +91,7 @@ module.exports = {
       const url = `http://${process.env.AWS_BUCKET}.s3.eu-west-2.amazonaws.com/${filename}`
 
       return {
+        tokens: req.tokens,
         signedRequest,
         url,
       }
@@ -107,7 +110,8 @@ module.exports = {
       redundantFilesCheck(_id)
 
       return {
-        ...user._doc
+        ...user._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err

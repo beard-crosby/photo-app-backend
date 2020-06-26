@@ -1,6 +1,7 @@
 module.exports = postSchema = `
   type Post {
     _id: ID!
+    tokens: String
     img: String!
     title: String!
     description: String

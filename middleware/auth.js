@@ -1,35 +1,52 @@
 const jwt = require('jsonwebtoken')
+const User = require("../models/user")
 
-module.exports = function (req, res, next) {
-    const authHeader = req.get("Authorization")
+const { signTokens } = require("../shared/utility")
 
-    if (!authHeader) {
-        req.isAuth = false
-        return next()
-    }
+module.exports = async (req, res, next) => {
+	const accessTokenHeader = req.get("accessToken")
+	const refreshTokenHeader = req.get("refreshToken")
+	req.isAuth = false
 
-    const token = authHeader.split(" ")[1]
-    if (!token || token === "") {
-        req.isAuth = false
-        return next()
-    }
+	if (!accessTokenHeader && !refreshTokenHeader) {
+		return next()
+	} 
 
-    let decodedToken
-    try {
-        decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`)
-    } catch(err) {
-        req.isAuth = false
-        console.log(err)
-        return next()
-    }
+	const accessToken = accessTokenHeader.split(" ")[1]
+	if (!accessToken || accessToken === "") {
+		return next()
+	}
 
-    if (!decodedToken) {
-        req.isAuth = false
-        return next()
-    }
+	try {
+		const verifiedToken = jwt.verify(accessToken, `${process.env.ACCESS_TOKEN_SECRET}`)
+		req.isAuth = true
+		req._id = verifiedToken._id
+		return next()
+	} catch {}
 
-    req.isAuth = true
-    req._id = decodedToken._id
-    req.email = decodedToken.email
-    next()
+	if (!refreshTokenHeader) {
+		return next()
+	}
+
+	const refreshToken = refreshTokenHeader.split(" ")[1]
+	if (!refreshToken || refreshToken === "") {
+		return next()
+	}
+
+	let verifiedRefreshToken
+	try {
+		verifiedRefreshToken = jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN_SECRET}`)
+	} catch {
+		return next()
+	}
+
+	const user = await User.findOne({ _id: verifiedRefreshToken._id })
+	if (!user || user.refresh_count !== verifiedRefreshToken.refresh_count) {
+		return next()
+	}
+
+	req.tokens = JSON.stringify(signTokens(user))
+	req.isAuth = true
+	req._id = verifiedRefreshToken._id
+	next()
 }

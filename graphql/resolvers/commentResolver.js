@@ -34,7 +34,8 @@ module.exports = {
       await tempPost.save()
 
       return {
-        ...newComment._doc
+        ...newComment._doc,
+        tokens: req.tokens,
       }
 
     } catch (err) {
@@ -56,58 +57,36 @@ module.exports = {
           model: 'User',
         },
       ])
-      return comments.map(comment => {
-        return comment
-      })
+
+      return {
+        comments,
+        tokens: req.tokens,
+      }
     } catch (err) {
       throw err
     }
   },
-  comment: async ({ _id, post, author }, req) => {
+  comment: async ({ _id }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      let comment = null
-      if (_id) {
-        comment = await Comment.findOne({ _id: _id }).populate([
-          {
-            path: 'post',
-            model: 'Post',
-          },
-          {
-            path: 'author',
-            model: 'User',
-          },
-        ])
-        if (!comment) throw new Error("A Comment by that ID was not found!")
-      } else if (post) {
-        comment = await Comment.findOne({ post: post }).populate([
-          {
-            path: 'post',
-            model: 'Post',
-          },
-          {
-            path: 'author',
-            model: 'User',
-          },
-        ])
-        if (!comment) throw new Error("A Comment on that Post was not found!")
-      } else {
-        comment = await Comment.findOne({ author: author }).populate([
-          {
-            path: 'post',
-            model: 'Post',
-          },
-          {
-            path: 'author',
-            model: 'User',
-          },
-        ])
-        if (!comment) throw new Error("A Comment by that Author was not found!")
-      }
+      const gotComment = await Comment.findOne({ _id: _id }).populate([
+        {
+          path: 'post',
+          model: 'Post',
+        },
+        {
+          path: 'author',
+          model: 'User',
+        },
+      ])
+      
+      if (!gotComment) throw new Error("A Comment by that ID was not found!")
+      
       return {
-        ...comment._doc
+        ...gotComment._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -123,7 +102,8 @@ module.exports = {
 
       await Comment.deleteOne({ _id: _id })
       return {
-        ...comment._doc
+        ...comment._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err

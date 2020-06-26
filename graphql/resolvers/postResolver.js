@@ -69,6 +69,7 @@ module.exports = {
 
       return {
         ...findPost._doc,
+        tokens: req.tokens,
         author: {
           ...findPost._doc.author._doc,
           email: findPost.author.settings.display_email ? findPost.author.email : "",
@@ -124,7 +125,8 @@ module.exports = {
       }).promise()
 
       return {
-        ...post._doc
+        ...post._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -146,7 +148,8 @@ module.exports = {
       await post.save()
 
       return {
-        ...post._doc
+        ...post._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -167,7 +170,8 @@ module.exports = {
       await post.save()
 
       return {
-        ...post._doc
+        ...post._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err

@@ -1,4 +1,6 @@
 const User = require("../models/user")
+const jwt = require("jsonwebtoken")
+const moment = require("moment")
 
 const { OAuth2Client } = require('google-auth-library')
 const aws = require("aws-sdk")
@@ -189,9 +191,34 @@ const redundantFilesCheck = async (_id) => {
   }).promise()
 }
 
+const signTokens = user => {
+  const access_token = jwt.sign(
+    { 
+      _id: user._id,
+    }, 
+    `${process.env.ACCESS_TOKEN_SECRET}`, 
+    { expiresIn: "15m" }
+  )
+
+  const refresh_token = jwt.sign(
+    { 
+      _id: user._id,
+      refresh_count: user.refresh_count,
+    }, 
+    `${process.env.REFRESH_TOKEN_SECRET}`, 
+    { expiresIn: "7d" }
+  )
+
+  return {
+    access_token, 
+    refresh_token,
+  }
+}
+
 exports.checkAuthorSettings = checkAuthorSettings
 exports.checkFollowingAuthorSettings = checkFollowingAuthorSettings
 exports.checkoAuthTokenValidity = checkoAuthTokenValidity
 exports.userPopulationObj = userPopulationObj
 exports.emptyS3Directory = emptyS3Directory
 exports.redundantFilesCheck = redundantFilesCheck
+exports.signTokens = signTokens

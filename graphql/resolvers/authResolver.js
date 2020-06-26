@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
 const moment = require("moment")
 
 const User = require("../../models/user")
@@ -12,7 +11,7 @@ const {
   checkoAuthTokenValidity, 
   userPopulationObj,
   emptyS3Directory,
-  redundantFilesCheck,
+  signTokens,
  } = require('../../shared/utility')
 
 module.exports = {
@@ -67,20 +66,10 @@ module.exports = {
       )
   
       await user.save()
-  
-      const token = jwt.sign(
-        {
-          id: user._id,
-          email: user.email,
-        },
-        `${process.env.JWT_SECRET}`,
-        { expiresIn: "1h" }
-      )
-      
+
       return {
         ...user._doc,
-        token,
-        token_expiry: 1,
+        tokens: JSON.stringify(signTokens(user)),
         email: "",
         website: "",
         password: null,
@@ -97,9 +86,7 @@ module.exports = {
 
       if (!user) throw new Error("An Account by that Email was not found!")
 
-      if (oAuthToken) {
-        await checkoAuthTokenValidity(oAuthToken)
-      }
+      if (oAuthToken) await checkoAuthTokenValidity(oAuthToken)
 
       if (user.password) {
         if (oAuthToken) throw new Error("The account for this email wasn't created with Google.")
@@ -113,19 +100,9 @@ module.exports = {
       user.logged_in_at = moment().format()
       await user.save()
 
-      const token = jwt.sign(
-        { 
-          _id: user._id, 
-          email: user.email,
-        }, 
-        `${process.env.JWT_SECRET}`, 
-        { expiresIn: "1h" }
-      )
-
       return {
         ...user._doc,
-        token,
-        token_expiry: 1,
+        tokens: JSON.stringify(signTokens(user)),
         email: user.settings.display_email ? user.email : "",
         website: user.settings.display_website ? user.website : "",
         posts: await checkAuthorSettings(user.posts),
@@ -140,13 +117,17 @@ module.exports = {
       throw err
     }
   },
-  user: async ({ _id }) => {
+  user: async ({ _id }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
     try {
       const user = await User.findOne({ _id }).populate(userPopulationObj)
       if (!user) throw new Error("A User by that ID was not found!")
 
       return {
         ...user._doc,
+        tokens: req.tokens,
         info: JSON.stringify(user._doc.info),
         posts: await checkAuthorSettings(user.posts),
         following: await checkFollowingAuthorSettings(user.following),
@@ -185,7 +166,8 @@ module.exports = {
       await emptyS3Directory(process.env.AWS_BUCKET, `${_id}/`)
 
       return {
-        ...user._doc
+        ...user._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -205,7 +187,8 @@ module.exports = {
 
       return {
         ...user._doc,
-        info: info
+        tokens: req.tokens,
+        info: info,
       }
     } catch (err) {
       throw err
@@ -229,7 +212,8 @@ module.exports = {
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -263,7 +247,8 @@ module.exports = {
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -313,7 +298,28 @@ module.exports = {
       await user.save()
 
       return {
-        ...user._doc
+        ...user._doc,
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  invalidateTokens: async ({}, req) => { // Invalidate all of the tokens for this user.
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findOne({_id: req._id})
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      user.refresh_count++
+      user.updated_at = moment().format()
+      await user.save()
+
+      return {
+        ...user._doc,
+        tokens: JSON.stringify(signTokens(user)),
       }
     } catch (err) {
       throw err

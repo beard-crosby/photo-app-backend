@@ -2,8 +2,8 @@ module.exports = authSchema = `
   type User {
     _id: ID!
     status: String
-    token: String!
-    token_expiry: Int!
+    tokens: String
+    refresh_count: Int
     logged_in_at: String
     geolocation: String
     name: String!
