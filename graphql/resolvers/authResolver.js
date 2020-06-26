@@ -137,12 +137,12 @@ module.exports = {
       throw err
     }
   },
-  deleteUser: async ({ _id }, req) => {
+  deleteUser: async ({}, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id }).populate([
+      const user = await User.findOne({ _id: req._id }).populate([
         {
           path: 'posts',
           model: 'Post',
@@ -161,13 +161,12 @@ module.exports = {
         await Post.deleteOne({ _id: post._id })
       })
 
-      await User.deleteOne({ _id: _id })
+      await User.deleteOne({ _id: req._id })
 
-      await emptyS3Directory(process.env.AWS_BUCKET, `${_id}/`)
+      await emptyS3Directory(process.env.AWS_BUCKET, `${req._id}/`)
 
       return {
         ...user._doc,
-        tokens: req.tokens,
       }
     } catch (err) {
       throw err
