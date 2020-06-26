@@ -27,7 +27,7 @@ module.exports = buildSchema(`
     createComment(post: ID!, comment: String!): Comment
     deleteComment(_id: ID!): Comment
     updateBasic(name: String, email: String, website: String): User
-    updateSettings(_id: ID!, settings: String!): User
+    updateSettings(settings: String!): User
     updateGeolocation(_id: ID!, geolocation: String!): User
     updateInfo(_id: ID!, info: String!): User
     updatePP(_id: ID!, profile_picture: String!): User
