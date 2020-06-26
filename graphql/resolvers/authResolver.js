@@ -218,12 +218,12 @@ module.exports = {
       throw err
     }
   },
-  updateFavourites: async ({ _id, post, action }, req) => {
+  updateFavourites: async ({ post, action }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: req._id })
       if (!user) throw new Error("A User by that ID was not found!")
       
       const postTest = await Post.findOne({ _id: post })

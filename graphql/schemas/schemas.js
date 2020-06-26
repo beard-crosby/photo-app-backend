@@ -31,8 +31,8 @@ module.exports = buildSchema(`
     updateGeolocation(geolocation: String!): User
     updateInfo(info: String!): User
     updatePP(profile_picture: String!): User
+    updateFavourites(post: ID!, action: String!): User
     updateStatus(status: String!): User
-    updateFavourites(_id: ID!, post: ID!, action: String!): User
     updateTitle(_id: ID!, title: String!): Post
     updateDescription(_id: ID!, description: String!): Post
     signS3(filename: String!, filetype: String!): S3Payload!
