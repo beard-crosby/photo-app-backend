@@ -3,7 +3,7 @@ const Comment = require('../../models/comment')
 const moment = require("moment")
 
 module.exports = {
-  createComment: async ({ post, comment, author }, req) => {
+  createComment: async ({ post, comment }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -11,16 +11,16 @@ module.exports = {
       const tempPost = await Post.findOne({ _id: post })
       if (!tempPost) throw new Error("A Post by that ID was not found!")
 
-      if (tempPost.author === author) throw new Error("You can't comment on your own post!")
+      if (tempPost.author === req._id) throw new Error("You can't comment on your own post!")
 
-      const testComment = await Comment.findOne({ post: post, comment: comment, author: author })
+      const testComment = await Comment.findOne({ post: post, comment: comment, author: req._id })
       if (testComment) throw new Error("Duplicate Comment!")
 
       const newComment = new Comment(
         {
           post,
           comment,
-          author,
+          author: req._id,
           created_at: moment().format(),
           updated_at: moment().format(),
         },

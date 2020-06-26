@@ -24,7 +24,7 @@ module.exports = buildSchema(`
     deleteUser: User
     createPost(postInput: postInput): Post
     deletePost(_id: ID!): Post
-    createComment(post: ID!, comment: String!, author: ID!): Comment
+    createComment(post: ID!, comment: String!): Comment
     deleteComment(_id: ID!): Comment
     updateBasic(name: String, email: String, website: String): User
     updateSettings(_id: ID!, settings: String!): User
