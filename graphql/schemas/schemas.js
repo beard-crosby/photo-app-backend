@@ -36,7 +36,7 @@ module.exports = buildSchema(`
     updateTitle(_id: ID!, title: String!): Post
     updateDescription(_id: ID!, description: String!): Post
     signS3(filename: String!, filetype: String!): S3Payload!
-    redundantFilesCheck(_id: ID!): User
+    redundantFilesCheck: User
   }
 
   schema {

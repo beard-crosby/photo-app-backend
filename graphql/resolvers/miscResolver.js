@@ -99,15 +99,15 @@ module.exports = {
       throw err
     }
   },
-  redundantFilesCheck: async ({ _id }, req) => {
+  redundantFilesCheck: async ({}, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: req._id })
       if (!user) throw new Error("A User by that ID was not found!")
 
-      redundantFilesCheck(_id)
+      redundantFilesCheck(req._id)
 
       return {
         ...user._doc,

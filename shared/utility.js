@@ -141,7 +141,7 @@ const wait = async (ms) => {
 }
 
 // Check an AWS s3 _id for any files that aren't referenced in the db for that user.
-const redundantFilesCheck = async (_id) => {
+const redundantFilesCheck = async _id => {
   await wait(3000) // wait 3s before continuing = ensure db has new file information.
 
   const user = await User.findOne({ _id: _id }).populate("posts")
