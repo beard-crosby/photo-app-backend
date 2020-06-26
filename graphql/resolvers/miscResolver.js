@@ -33,12 +33,12 @@ module.exports = {
       throw err
     }
   },
-  updateGeolocation: async ({ _id, geolocation }, req) => {
+  updateGeolocation: async ({ geolocation }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: req._id })
       if (!user) throw new Error("A User by that ID was not found!")
 
       user.geolocation = JSON.parse(geolocation)
