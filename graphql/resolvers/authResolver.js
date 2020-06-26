@@ -253,12 +253,12 @@ module.exports = {
       throw err
     }
   },
-  updateBasic: async ({ _id, name, email, website }, req) => {
+  updateBasic: async ({ name, email, website }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: req._id })
       if (!user) throw new Error("A User by that ID was not found!")
 
       if (!name && !email && !website) throw new Error("No Name, Email or Website was passed!")
