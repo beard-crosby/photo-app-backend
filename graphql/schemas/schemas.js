@@ -29,7 +29,7 @@ module.exports = buildSchema(`
     updateBasic(name: String, email: String, website: String): User
     updateSettings(settings: String!): User
     updateGeolocation(geolocation: String!): User
-    updateInfo(_id: ID!, info: String!): User
+    updateInfo(info: String!): User
     updatePP(_id: ID!, profile_picture: String!): User
     updateStatus(status: String!): User
     updateFavourites(_id: ID!, post: ID!, action: String!): User
