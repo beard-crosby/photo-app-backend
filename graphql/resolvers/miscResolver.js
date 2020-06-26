@@ -54,9 +54,9 @@ module.exports = {
       throw err
     }
   },
-  updateStatus: async ({ _id, status }) => {
+  updateStatus: async ({ status }, req) => {
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: req._id })
       if (!user) throw new Error("A User by that ID was not found!")
 
       user.status = status
