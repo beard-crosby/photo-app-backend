@@ -30,7 +30,7 @@ module.exports = buildSchema(`
     updateSettings(settings: String!): User
     updateGeolocation(geolocation: String!): User
     updateInfo(info: String!): User
-    updatePP(_id: ID!, profile_picture: String!): User
+    updatePP(profile_picture: String!): User
     updateStatus(status: String!): User
     updateFavourites(_id: ID!, post: ID!, action: String!): User
     updateTitle(_id: ID!, title: String!): Post

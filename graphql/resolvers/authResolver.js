@@ -193,12 +193,12 @@ module.exports = {
       throw err
     }
   },
-  updatePP: async ({ _id, profile_picture }, req) => {
+  updatePP: async ({ profile_picture }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({ _id: _id })
+      const user = await User.findOne({ _id: req._id })
       if (!user) throw new Error("A User by that ID was not found!")
 
       const newPP = profile_picture.substring(profile_picture.lastIndexOf("/") + 1)
