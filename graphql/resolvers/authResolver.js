@@ -139,6 +139,8 @@ module.exports = {
         ...user._doc,
         tokens: req.tokens,
         info: JSON.stringify(user._doc.info),
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
         posts: await checkAuthorSettings(user.posts),
         following: await checkFollowingAuthorSettings(user.following),
         favourites: await checkAuthorSettings(user.favourites),
@@ -198,6 +200,8 @@ module.exports = {
         ...user._doc,
         tokens: req.tokens,
         info: info,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -223,6 +227,8 @@ module.exports = {
       return {
         ...user._doc,
         tokens: req.tokens,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -258,6 +264,8 @@ module.exports = {
       return {
         ...user._doc,
         tokens: req.tokens,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -309,6 +317,8 @@ module.exports = {
       return {
         ...user._doc,
         tokens: req.tokens,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -329,6 +339,8 @@ module.exports = {
       return {
         ...user._doc,
         tokens: JSON.stringify(signTokens(user)),
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err

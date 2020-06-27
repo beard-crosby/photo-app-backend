@@ -28,6 +28,8 @@ module.exports = {
         ...user._doc,
         tokens: req.tokens,
         settings: settings,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -49,6 +51,8 @@ module.exports = {
         ...user._doc,
         tokens: req.tokens,
         geolocation: geolocation,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -64,6 +68,8 @@ module.exports = {
 
       return {
         ...user._doc,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
@@ -112,6 +118,8 @@ module.exports = {
       return {
         ...user._doc,
         tokens: req.tokens,
+        email: user.settings.display_email ? user.email : "",
+        website: user.settings.display_website ? user.website : "",
       }
     } catch (err) {
       throw err
