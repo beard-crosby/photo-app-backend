@@ -285,7 +285,9 @@ module.exports = {
         if (name === "delete") {
           throw new Error("You cannot delete your name! Feel free to use a fake name!")
         } else if (!/^[a-zA-Z\s-']{6,30}$/.test(name)) {
-          throw new Error("Your Name must only have letters, spaces, -' characters and be 6-15 characters in length.")
+          throw new Error("Your Name must only have letters, spaces, -' characters and be 6-30 characters in length.")
+        } else if (user.name === name) {
+          throw new Error("Duplicate Name!")
         } else {
           user.name = name
         }
@@ -296,6 +298,8 @@ module.exports = {
           user.email = ""
         } else if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email)) {
           throw new Error("Please enter a valid email address.")
+        } else if (user.email === email) {
+          throw new Error("Duplicate Email!")
         } else {
           user.email = email
         }
@@ -306,6 +310,8 @@ module.exports = {
           user.website = ""
         } else if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(website)) {
           throw new Error("Please enter a valid URL")
+        } else if (user.website === website) {
+          throw new Error("Duplicate Website!")
         } else {
           user.website = website
         }
