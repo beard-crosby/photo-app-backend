@@ -12,7 +12,7 @@ module.exports = buildSchema(`
 
   type rootQuery {
     user(_id: ID!): User!
-    allPosts: [Post!]!
+    posts(amount: Int!, iterations: Int): [[Post!]]!
     comment(_id: ID, post: ID, author: ID): Comment!
     allComments: [Comment!]!
     login(email: String!, password: String, oAuthToken: String): User!

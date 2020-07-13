@@ -35,9 +35,13 @@ module.exports = {
       }
 
       if (password) {
+        if (!/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{8,20}$/.test(password)) throw new Error("Your Password must have at least one letter and one number.")
         if (password !== pass_confirm) throw new Error("Passwords do not match.")
         var hashedPass = await bcrypt.hash(password, 12)
       }
+
+      if (!/^[a-zA-Z\s-']{1,30}$/.test(name)) throw new Error("Your Name cannot contain numbers or special characters other than hyphens and apostrophes.")
+      if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email)) throw new Error("Please enter a valid email address.")
 
       const user = new User(
         {
@@ -138,12 +142,15 @@ module.exports = {
       return {
         ...user._doc,
         tokens: req.tokens,
-        info: JSON.stringify(user._doc.info),
-        email: user.settings.display_email ? user.email : "",
-        website: user.settings.display_website ? user.website : "",
+        email: _id === req._id ? user.email : user.settings.display_email ? user.email : "",
+        website: _id === req._id ? user.website : user.settings.display_website ? user.website : "",
         posts: await checkAuthorSettings(user.posts),
         following: await checkFollowingAuthorSettings(user.following),
         favourites: await checkAuthorSettings(user.favourites),
+        info: JSON.stringify(user._doc.info),
+        geolocation: JSON.stringify(user._doc.geolocation),
+        settings: JSON.stringify(user._doc.settings),
+        password: null,
       }
     } catch (err) {
       throw err
@@ -282,10 +289,10 @@ module.exports = {
       if (!name && !email && !website) throw new Error("No Name, Email or Website was passed!")
       
       if (name) {
-        if (name === "delete") {
-          throw new Error("You cannot delete your name! Feel free to use a fake name!")
-        } else if (!/^[a-zA-Z\s-']{6,30}$/.test(name)) {
-          throw new Error("Your Name must only have letters, spaces, -' characters and be 6-30 characters in length.")
+        if (name === "") {
+          throw new Error("Your Name must have at least one letter!")
+        } else if (!/^[a-zA-Z\s-']{1,30}$/.test(name)) {
+          throw new Error("Your Name cannot contain numbers or special characters other than hyphens and apostrophes.")
         } else if (user.name === name) {
           throw new Error("Duplicate Name!")
         } else {
@@ -294,9 +301,7 @@ module.exports = {
       } 
       
       if (email) {
-        if (email === "delete") {
-          user.email = ""
-        } else if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email)) {
+        if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email) || email === "") {
           throw new Error("Please enter a valid email address.")
         } else if (user.email === email) {
           throw new Error("Duplicate Email!")
@@ -306,9 +311,7 @@ module.exports = {
       } 
       
       if (website) {
-        if (website === "delete") {
-          user.website = ""
-        } else if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(website)) {
+        if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(website)) {
           throw new Error("Please enter a valid URL")
         } else if (user.website === website) {
           throw new Error("Duplicate Website!")

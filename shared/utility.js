@@ -215,6 +215,17 @@ const signTokens = user => {
   }
 }
 
+// Returns an array with random models of the chosen model type.
+const getRandom = async (model, amount) => {
+  let modelArr = []
+  const count = await model.countDocuments()
+  for (let i = 1; i <= amount; i++) {
+    const random = Math.floor(Math.random() * count)
+    modelArr.push(await model.findOne().skip(random))
+  }
+  return modelArr
+}
+
 exports.checkAuthorSettings = checkAuthorSettings
 exports.checkFollowingAuthorSettings = checkFollowingAuthorSettings
 exports.checkoAuthTokenValidity = checkoAuthTokenValidity
@@ -222,3 +233,4 @@ exports.userPopulationObj = userPopulationObj
 exports.emptyS3Directory = emptyS3Directory
 exports.redundantFilesCheck = redundantFilesCheck
 exports.signTokens = signTokens
+exports.getRandom = getRandom

@@ -11,6 +11,8 @@ const s3 = new aws.S3({
   region: 'eu-west-2',
 })
 
+const { getRandom } = require('../../shared/utility')
+
 module.exports = {
   createPost: async (args, req) => {
     if (!req.isAuth) {
@@ -81,18 +83,24 @@ module.exports = {
       throw err
     }
   },
-  allPosts: async () => {
+  // amount = how many posts returned in the arrays
+  // iterations = how many arrays
+  posts: async ({ amount, iterations }) => {
     try {
-      const posts = await Post.find()
+      let postsArr = [await getRandom(Post, amount)]
 
-      if (posts.length === 0) {
+      if (iterations) {
+        for (let i = 1; i < iterations; i++) {
+          postsArr.push(await getRandom(Post, amount))
+        }
+      }
+      
+      if (postsArr.length === 0) {
         console.log("There aren't any Posts! Houston, we have a problem...")
         throw new Error("There aren't any Posts! Houston, we have a problem...")
       }
 
-      return posts.map(post => {
-        return post
-      })
+      return postsArr
     } catch (err) {
       throw err
     }
