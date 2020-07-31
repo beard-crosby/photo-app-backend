@@ -333,7 +333,7 @@ module.exports = {
       throw err
     }
   },
-  invalidateTokens: async ({}, req) => { // Invalidate all of the tokens for this user.
+  updatePassword: async ({ oldPass, newPass, newPassConfirm }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -341,7 +341,12 @@ module.exports = {
       const user = await User.findOne({_id: req._id})
       if (!user) throw new Error("A User by that ID was not found!")
 
-      user.refresh_count++
+      if (!bcrypt.compareSync(oldPass, user.password)) throw new Error("Incorrect Password.")
+      if (!newPass || !newPassConfirm) throw new Error("Provide a new password.")
+      if (newPass !== newPassConfirm) throw new Error("Passwords do not match.")
+
+      user.refresh_count++ // Invalidate all of the tokens for this user.
+      user.password = await bcrypt.hash(newPass, 12)
       user.updated_at = moment().format()
       await user.save()
 
@@ -350,6 +355,7 @@ module.exports = {
         tokens: JSON.stringify(signTokens(user)),
         email: user.settings.display_email ? user.email : "",
         website: user.settings.display_website ? user.website : "",
+        password: null,
       }
     } catch (err) {
       throw err

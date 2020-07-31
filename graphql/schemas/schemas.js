@@ -16,7 +16,6 @@ module.exports = buildSchema(`
     comment(_id: ID, post: ID, author: ID): Comment!
     allComments: [Comment!]!
     login(email: String!, password: String, oAuthToken: String): User!
-    invalidateTokens: User
   }
 
   type rootMutation {
@@ -26,6 +25,7 @@ module.exports = buildSchema(`
     deletePost(_id: ID!): Post
     createComment(post: ID!, comment: String!): Comment
     deleteComment(_id: ID!): Comment
+    updatePassword(oldPass: String!, newPass: String!, newPassConfirm: String!): User
     updateBasic(name: String, email: String, website: String): User
     updateSettings(settings: String!): User
     updateGeolocation(geolocation: String!): User
